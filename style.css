@@ -7,7 +7,7 @@
     --text-color: #30475E;
     --object-color: #F05454;
     --line-color: #121212;
-    color: var(--text-color);
+    
 }
 body{
     width: 300px;
@@ -16,8 +16,15 @@ body{
 }
 
 .main-container{
-
     display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    width: 100%;
+    height: 100%;
+}
+.tab-container{
+
+    display: none;
     flex-direction: column;
     justify-content: center;
     background-color: var(--bg-color);
@@ -47,6 +54,7 @@ body{
     border: 2px solid var(--text-color);
     margin: 10px;
     border-radius: 20px;
+    padding: 20px 10px;
 
 }
 .url{
@@ -61,7 +69,7 @@ body{
     padding: 5px 10px;
     height: 60%;
     margin: 10px;
-    border-radius: 30px;
+    border-radius: 20px;
     border : 2px solid var(--text-color);
     background-color: rgba(255, 255, 255, 0);
 }
@@ -74,9 +82,9 @@ body{
 }
 .qr-action{
     margin: 0px 10px;
-    width: 50%;
+    width: 100%;
     height:70%;
-    border-radius: 30px;
+    border-radius: 20px;
     color: white;
     background-color: var(--object-color);
     font-size: 20px;
@@ -88,4 +96,119 @@ body{
     align-items: center;
     height: 10%;
     background-color: white;
+}
+.tab-on{
+    display: flex;
+}
+.tab{
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0px;
+    background-color: white
+}
+.tab-selected{
+    background-color: var(--bg-color);
+}
+.code-actions{
+    
+    height: 15%;
+    margin: 10px;
+    display: flex;
+    padding: 10px;
+    background-color: white;
+    border-radius: 20px;
+}
+.code-action{
+    padding: 10px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    width: 100%;
+    height:100%;
+    border-radius: 10px;
+    background-color: #ffffff00;
+}
+.code-action img{
+    width: 25px;
+    height: 25px;
+}
+.code-selected{
+    background-color:#9b9b9b31 ;
+}
+.code-container{
+    height: 100%;
+    padding: 0px 10px 10px 10px;
+}
+.send-code , .send-object , .send-image{
+    height: 20%;
+    font-size: 20px;
+    color: white;
+    margin: 0px 10px 10px 10px;
+    border-radius: 20px;
+    background-color: var(--object-color);
+    border: none;
+}
+.send-object{
+    height: 13%;
+}
+
+.CodeMirror{
+    color: white;
+    border-radius: 20px;
+    font-size: 10px;
+    padding: 20px;
+}
+.object-data-container{
+    height: 88%;
+    background-color: white;
+    margin: 10px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.object-data-field{
+    background-color: var(--bg-color);
+    border-radius: 20px;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+}
+.object-subject{
+    height: 10%;
+}
+.object-message{
+    height: 80%;
+    margin: 0px 10px 0px 10px;
+}
+.object-from{
+    height: 10%;
+}
+
+#image-input{
+    height: 10%;
+    background-color: white;
+    border-radius: 20px;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+}
+.image-container{
+    height: 90%;
+    background-color: white;
+    border-radius: 20px;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+}
+.send-image{
+    height: 18%;
+}
+
+.image-container img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }

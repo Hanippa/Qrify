@@ -8,7 +8,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300&display=swap" rel="stylesheet">
-<script src="scripts/qrcode/qrcode.min.js"></script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="scripts/codemirror/theme/dracula.css">
+<link rel="stylesheet" href="scripts/codemirror/lib/codemirror.css">
+
+
 
   <title>Qrify</title>
 </head>
@@ -18,20 +23,79 @@
       <img id="logo" src="images/icon-32.png" alt="">
       <h1>Qrify</h1>
     </div>
+    <div class="tab-container home tab-on">
+
     <div id="qrcode" class="qrcode">
 
     </div>
     <div class="url">
-      <input class="url-input" type="text" readonly>
+      <input class="url-input" type="text">
     </div>
     <div class="qr-actions">
       <button class="qr-action export">export</button>
-      <button class="qr-action share">share</button>
-    </div>
-    <div class="footer">
-      <h3>hanippa</h3>
     </div>
   </div>
+
+  <div class="tab-container code">
+    <div class="code-actions">
+      <button data-pastebin="javascript" value="javascript" class="code-action code-selected"><img src="images/languages/javascript.svg" alt="javascript"></button>
+      <button data-pastebin="python" value="python" class="code-action"><img src="images/languages/python.svg" alt="python"></button>
+      <button data-pastebin="plaintext" value="text/x-textile" class="code-action"><img src="images/languages/plaintext.svg" alt="plaintext"></button>
+      <button data-pastebin="html" value="htmlmixed" class="code-action"><img src="images/languages/html.svg" alt="html"></button>
+      <button data-pastebin="cpp" value="text/x-csrc" class="code-action"><img src="images/languages/c-plain.svg" alt="cpp"></button>
+      <button data-pastebin="plaintext" value="text/x-sh" class="code-action"><img src="images/languages/bash.svg" alt="plaintext"></button>
+    </div>
+    <div class="code-container">
+
+    </div>
+    <button class="send-code">Qrify</button>
+</div>
+    
+  <div class="tab-container object">
+    <div class="object-data-container">
+      <input placeholder="subject" type="text" class="object-data-field object-subject">
+      <textarea placeholder="message" name="message" class="object-data-field object-message" cols="30" rows="10"></textarea>
+      <input placeholder="from" type="text" class="object-data-field object-from">
+    </div>
+    <button class="send-object">Qrify</button>
+   
+  </div>
+  <div class="tab-container image">
+
+    <input  accept="image/*" type="file" name="image" id="image-input">
+    <div class="image-container">
+
+    </div>
+    <button class="send-image">Qrify</button>
+   
+  </div>
+
+
+    <div class="footer">
+        <button value="home" class="tab tab-selected"><span class="material-symbols-outlined">
+          home
+          </span></button>
+        <button value="code" class="tab"><span class="material-symbols-outlined">
+          code
+          </span></button>
+        <button value="object" class="tab"><span class="material-symbols-outlined">
+          data_object
+          </span></button>
+          <button value="image" class="tab"><span class="material-symbols-outlined">
+            image
+            </span></button>
+    </div>
+  </div>
+  <script src="scripts/qrcode/qrcode.min.js"  ></script>
+<script src="scripts/codemirror/lib/codemirror.js"></script> 
+<script  src="scripts/codemirror/mode/javascript/javascript.js" ></script>
+<script  src="scripts/codemirror/mode/python/python.js" ></script>
+<script  src="scripts/codemirror/mode/css/css.js" ></script>
+<script  src="scripts/codemirror/mode/textile/textile.js"  defer></script>
+<script  src="scripts/codemirror/mode/xml/xml.js"  ></script>
+<script  src="scripts/codemirror/mode/clike/clike.js" ></script>
+<script  src="scripts/codemirror/mode/shell/shell.js" ></script>
+<script  src="scripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
   <script type="module" src="scripts/qrcreator/src/qr-creator.js"></script>
     <script src="scripts/popup.js"></script>
 </body>
