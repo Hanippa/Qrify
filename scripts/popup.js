@@ -138,6 +138,7 @@ myCodeMirror.setSize(240, 250); // size of the code block
     formdata.append("code", user_code)
     formdata.append("language", selected.dataset.pastebin) // get the selected language
 
+    // adds a loading wheel and hides the home icon
     home_tab = tab_buttons[0]
     home_tab.children[0].classList.add('hidden')
     home_tab.append(getloadingwheel())
@@ -147,6 +148,7 @@ myCodeMirror.setSize(240, 250); // size of the code block
         body: formdata
     }).then(data => data.text()).then(data => {
 
+      //removes the loading wheel and enables the home icon
       home_tab.children[1].remove()
       home_tab.children[0].classList.remove('hidden')
 
@@ -175,6 +177,7 @@ myCodeMirror.setSize(240, 250); // size of the code block
   // adds an event listener to the "qrify" button on the object tab.  the event listener creates a form with the data from the object, sends it to the pastebin api and renders a new qr code.
   object_send_button.addEventListener('click' , () => {
 
+    // adds a loading wheel and hides the home icon
     home_tab = tab_buttons[0]
     home_tab.children[0].classList.add('hidden')
     home_tab.append(getloadingwheel())
@@ -187,7 +190,8 @@ myCodeMirror.setSize(240, 250); // size of the code block
         method: "post",
         body: formdata
     }).then(data => data.text()).then(data => {
-      
+           
+      //removes the loading wheel and enables the home icon
       home_tab.children[1].remove()
       home_tab.children[0].classList.remove('hidden')
 
@@ -217,6 +221,7 @@ myCodeMirror.setSize(240, 250); // size of the code block
       const formdata = new FormData()
       formdata.append("image", user_image.files[0]) // get the image from the html input and append it to the form
 
+      // adds a loading wheel and hides the home icon
       home_tab = tab_buttons[0]
       home_tab.children[0].classList.add('hidden')
       home_tab.append(getloadingwheel())
@@ -229,6 +234,7 @@ myCodeMirror.setSize(240, 250); // size of the code block
           body: formdata
       }).then(data => data.json()).then(data => {
 
+      //removes the loading wheel and enables the home icon
         home_tab.children[1].remove()
         home_tab.children[0].classList.remove('hidden')
 
