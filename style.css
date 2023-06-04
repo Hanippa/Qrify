@@ -187,12 +187,19 @@ body{
     height: 10%;
 }
 
-#image-input{
+.custom-file-input{
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 10%;
     background-color: white;
     border-radius: 20px;
     border: none;
     padding: 10px;
+    margin: 10px 10px 0px 10px;
+}
+.custom-file-input span{
     margin: 10px;
 }
 .image-container{
@@ -209,6 +216,9 @@ body{
 
 .image-container img{
     width: 100%;
-    height: 100%;
+    height: 270px;
     object-fit: contain;
+}
+.hidden{
+    display: none;
 }

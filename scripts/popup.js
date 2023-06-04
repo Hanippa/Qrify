@@ -3,6 +3,7 @@
 // the main function (self invoking) will run everytime the extention is opened
 (async () => {
 
+  
 //gets all active tabs from the chrome api, with any url
 const tabs = await chrome.tabs.query({
     url: [

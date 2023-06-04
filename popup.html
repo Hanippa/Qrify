@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="scripts/codemirror/theme/dracula.css">
 <link rel="stylesheet" href="scripts/codemirror/lib/codemirror.css">
-<script id="qrscript" src="scripts/qrcode/qrcode.min.js"  ></script>
+
 
 
   <title>Qrify</title>
@@ -62,7 +62,10 @@
   </div>
   <div class="tab-container image">
 
-    <input  accept="image/*" type="file" name="image" id="image-input">
+    <input  accept="image/*" type="file" name="image" id="image-input" class="hidden">
+    <label for="image-input" class="custom-file-input">Choose file <span class="material-symbols-outlined">
+      upload
+      </span></label>
     <div class="image-container">
 
     </div>
@@ -86,7 +89,7 @@
             </span></button>
     </div>
   </div>
-  
+<script id="qrscript" src="scripts/qrcode/qrcode.min.js"  ></script>
 <script src="scripts/codemirror/lib/codemirror.js"></script> 
 <script  src="scripts/codemirror/mode/javascript/javascript.js" ></script>
 <script  src="scripts/codemirror/mode/python/python.js" ></script>
