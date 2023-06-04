@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
   "name": "Qrify",
-  "description": "Base Level Extension",
-  "version": "1.0",
+  "description": "QR code generator, the ultimate QRcode generator for the browser, for urls images code and messages.",
+  "version": "2.0",
+  "author": "https://github.com/hanippa", 
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",

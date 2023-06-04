@@ -4,15 +4,30 @@ const getloadingwheel = () => {
   wheel.classList.add('loader')
   return wheel
 }
+
+const renderQr = (text) =>{
+  try{
+    QrCreator.render({
+      text: text,
+      radius: 0.5, // 0.0 to 0.5
+      ecLevel: 'H', // L, M, Q, H
+      fill: '#30475E', // foreground color
+      background: null, // color or null for transparent
+      size: 230 // in pixels
+    }, document.querySelector('#qrcode'));
+  }
+  catch{
+    document.querySelector('#qrcode').innerText = 'failed to render qr code :('
+  }
+}
+
 // the main function (self invoking) will run everytime the extention is opened
 (async () => {
 
   const qrcreator = document.getElementById('qrscript')
+  //wait for the qr code creator to load (had issues with loading on slow comupters (might not be needed))
   qrcreator.addEventListener('load', async () => {
     
-
-
-
 //gets all active tabs from the chrome api, with any url
 const tabs = await chrome.tabs.query({
   url: [
@@ -23,14 +38,8 @@ const tabs = await chrome.tabs.query({
 });
 
 // renders the qr code for the active tab we get from the chrome api
-QrCreator.render({
-  text: tabs[0].url,
-  radius: 0.5, // 0.0 to 0.5
-  ecLevel: 'H', // L, M, Q, H
-  fill: '#30475E', // foreground color
-  background: null, // color or null for transparent
-  size: 230 // in pixels
-}, document.querySelector('#qrcode'));
+
+  renderQr(tabs[0].url)
 
 
 const url = document.getElementsByClassName('url-input')[0]
@@ -40,14 +49,8 @@ url.addEventListener('input' , () => {
   if ( document.querySelector('#qrcode') !== undefined){
     document.querySelector('#qrcode').innerHTML = ''
   }
-  QrCreator.render({
-    text:  url.value,
-    radius: 0.5, // 0.0 to 0.5
-    ecLevel: 'H', // L, M, Q, H
-    fill: '#30475E', // foreground color
-    background: null, // color or null for transparent
-    size: 230 // in pixels
-  }, document.querySelector('#qrcode'));
+  
+    renderQr(url.value)
 })
 
 //adds the url of the active tab to the url field in the html
@@ -62,7 +65,19 @@ exportbtn.onclick = () => {  chrome.downloads.download({
   saveAs: true  
 });}
 
+const copybtn = document.getElementsByClassName('copy')[0]; // the copy button in the home screen
+//copy the rendered qr code with the chrome api
+copybtn.onclick = () => { 
+  try {
+      document.querySelector('.qrcode canvas').toBlob((blob) => { 
+        const item = new ClipboardItem({ "image/png": blob });
+        navigator.clipboard.write([item]); 
+    });
 
+} catch (error) {
+    console.error(error);
+}
+}
 
 const tab_buttons = document.getElementsByClassName('tab');
 let selected_tab = document.getElementsByClassName('tab-selected')[0]
@@ -85,14 +100,21 @@ for (let tab_button of tab_buttons){
 
 
 // creating a code block useing the code mirror library
-var myCodeMirror = CodeMirror(document.getElementsByClassName('code-container')[0] , {
-  value: "",
-  mode:  "javascript", // default programming language
-  theme : "dracula", // code block theme
-  lineNumbers: true
-});
-myCodeMirror.refresh();
-myCodeMirror.setSize(240, 250); // size of the code block
+let myCodeMirror
+try{
+  myCodeMirror = CodeMirror(document.getElementsByClassName('code-container')[0] , {
+    value: "",
+    mode:  "javascript", // default programming language
+    theme : "dracula", // code block theme
+    lineNumbers: true
+  });
+  myCodeMirror.refresh();
+  myCodeMirror.setSize(240, 250); // size of the code block
+}
+catch{
+  document.getElementsByClassName('code-container')[0].innerText = 'failed to create code block :('
+}
+
 
 const code_actions = document.getElementsByClassName('code-action');
 let selected = document.getElementsByClassName('code-selected')[0];
@@ -147,7 +169,7 @@ code_send_button.addEventListener('click' , () => {
   home_tab = tab_buttons[0]
   home_tab.children[0].classList.add('hidden')
   home_tab.append(getloadingwheel())
-
+  
   fetch("https://pastebin.run/api/v1/pastes", { // send the data to the pastebin api, with fetch post reqeust.
       method: "post",
       body: formdata
@@ -162,15 +184,12 @@ code_send_button.addEventListener('click' , () => {
       document.querySelector('#qrcode').innerHTML = ''
     }
     //render a new qr code for the code
-    QrCreator.render({
-      text:  `https://www.pastebin.run/${data}`,
-      radius: 0.5, // 0.0 to 0.5
-      ecLevel: 'H', // L, M, Q, H
-      fill: '#30475E', // foreground color
-      background: null, // color or null for transparent
-      size: 230 // in pixels
-    }, document.querySelector('#qrcode'));
+      renderQr(`https://www.pastebin.run/${data}`)
     url.value = 'your code 😳'
+  }).catch((e) => {
+    home_tab.children[1].remove()
+    home_tab.children[0].classList.remove('hidden')
+    document.querySelector('#qrcode').innerText = `failed to upload your code :( \n ${e}`
   })
      
   })
@@ -191,30 +210,30 @@ object_send_button.addEventListener('click' , () => {
   const formdata = new FormData()
   formdata.append("code", user_object)
   formdata.append("language", "plaintext")
-  fetch("https://pastebin.run/api/v1/pastes", { // send the data to the pastebin api, with fetch post reqeust.
-      method: "post",
-      body: formdata
-  }).then(data => data.text()).then(data => {
-         
-    //removes the loading wheel and enables the home icon
-    home_tab.children[1].remove()
-    home_tab.children[0].classList.remove('hidden')
 
-    // delete the existing qr code 
-    if ( document.querySelector('#qrcode') !== undefined){
-      document.querySelector('#qrcode').innerHTML = ''
-    }
-    //render a new qr code for the ojbect
-    QrCreator.render({
-      text:  `https://www.pastebin.run/${data}`,
-      radius: 0.5, // 0.0 to 0.5
-      ecLevel: 'H', // L, M, Q, H
-      fill: '#30475E', // foreground color
-      background: null, // color or null for transparent
-      size: 230 // in pixels
-    }, document.querySelector('#qrcode'));
+
+    fetch("https://pastebin.run/api/v1/pastes", { // send the data to the pastebin api, with fetch post reqeust.
+    method: "post",
+    body: formdata
+  }).then(data => data.text()).then(data => {
+       
+  //removes the loading wheel and enables the home icon
+  home_tab.children[1].remove()
+  home_tab.children[0].classList.remove('hidden')
+
+  // delete the existing qr code 
+  if ( document.querySelector('#qrcode') !== undefined){
+    document.querySelector('#qrcode').innerHTML = ''
+  }
+  //render a new qr code for the ojbect
+    renderQr(`https://www.pastebin.run/${data}`)
     url.value = 'your message 😳'
-  })
+}).catch((e) => {
+  home_tab.children[1].remove()
+  home_tab.children[0].classList.remove('hidden')
+  document.querySelector('#qrcode').innerText = `failed to upload your message :( \n ${e}`
+})
+
      
   })
 
@@ -248,24 +267,13 @@ object_send_button.addEventListener('click' , () => {
         document.querySelector('#qrcode').innerHTML = ''
       }
       //render a new qr code for the image
-      QrCreator.render({
-        text:  data.data.link,
-        radius: 0.5, // 0.0 to 0.5
-        ecLevel: 'H', // L, M, Q, H
-        fill: '#30475E', // foreground color
-        background: null, // color or null for transparent
-        size: 230 // in pixels
-      }, document.querySelector('#qrcode'));
-     
+       renderQr(data.data.link)
         url.value = 'your image 😳'
+    }).catch((e) => {
+      home_tab.children[1].remove()
+      home_tab.children[0].classList.remove('hidden')
+      document.querySelector('#qrcode').innerText = `failed to upload your image :( \n ${e}`
     })
-  })
-
-
-
-  })
-  
-
-
+  })})
 })();
 

@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
@@ -21,8 +19,9 @@
 <body>
   <div class="main-container">
     <div class="title">
-      <img id="logo" src="images/icon-32.png" alt="">
+      <img id="logo" src="images/icon-32.png" alt="logo">
       <h1>Qrify</h1>
+      <a target="_blank" id="githublink" href="https://github.com/Hanippa/Qrify"><img id="github" src="images/github.svg" alt="github"></a>
     </div>
     <div class="tab-container home tab-on">
 
@@ -33,7 +32,12 @@
       <input class="url-input" type="text">
     </div>
     <div class="qr-actions">
-      <button class="qr-action export">export</button>
+      <button class="qr-action export">export <span class="material-symbols-outlined">
+        download
+        </span></button>
+      <button class="qr-action copy">copy<span class="material-symbols-outlined">
+        content_copy
+        </span></button>
     </div>
   </div>
 
@@ -95,7 +99,6 @@
 <script src="scripts/codemirror/lib/codemirror.js"></script> 
 <script  src="scripts/codemirror/mode/javascript/javascript.js" ></script>
 <script  src="scripts/codemirror/mode/python/python.js" ></script>
-<script  src="scripts/codemirror/mode/css/css.js" ></script>
 <script  src="scripts/codemirror/mode/textile/textile.js"  defer></script>
 <script  src="scripts/codemirror/mode/xml/xml.js"  ></script>
 <script  src="scripts/codemirror/mode/clike/clike.js" ></script>
