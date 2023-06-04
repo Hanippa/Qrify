@@ -1,5 +1,9 @@
 
-
+const getloadingwheel = () => {
+  const wheel = document.createElement('div')
+  wheel.classList.add('loader')
+  return wheel
+}
 // the main function (self invoking) will run everytime the extention is opened
 (async () => {
 
@@ -133,10 +137,18 @@ myCodeMirror.setSize(240, 250); // size of the code block
     const formdata = new FormData()
     formdata.append("code", user_code)
     formdata.append("language", selected.dataset.pastebin) // get the selected language
+
+    home_tab = tab_buttons[0]
+    home_tab.children[0].classList.add('hidden')
+    home_tab.append(getloadingwheel())
+
     fetch("https://pastebin.run/api/v1/pastes", { // send the data to the pastebin api, with fetch post reqeust.
         method: "post",
         body: formdata
     }).then(data => data.text()).then(data => {
+
+      home_tab.children[1].remove()
+      home_tab.children[0].classList.remove('hidden')
 
       // delete the existing qr code 
       if ( document.querySelector('#qrcode') !== undefined){
@@ -162,6 +174,11 @@ myCodeMirror.setSize(240, 250); // size of the code block
 
   // adds an event listener to the "qrify" button on the object tab.  the event listener creates a form with the data from the object, sends it to the pastebin api and renders a new qr code.
   object_send_button.addEventListener('click' , () => {
+
+    home_tab = tab_buttons[0]
+    home_tab.children[0].classList.add('hidden')
+    home_tab.append(getloadingwheel())
+
     user_object = `${document.getElementsByClassName('object-subject')[0].value} \n ${document.getElementsByClassName('object-message')[0].value} \n from, ${document.getElementsByClassName('object-from')[0].value}`
     const formdata = new FormData()
     formdata.append("code", user_object)
@@ -170,6 +187,9 @@ myCodeMirror.setSize(240, 250); // size of the code block
         method: "post",
         body: formdata
     }).then(data => data.text()).then(data => {
+      
+      home_tab.children[1].remove()
+      home_tab.children[0].classList.remove('hidden')
 
       // delete the existing qr code 
       if ( document.querySelector('#qrcode') !== undefined){
@@ -197,6 +217,10 @@ myCodeMirror.setSize(240, 250); // size of the code block
       const formdata = new FormData()
       formdata.append("image", user_image.files[0]) // get the image from the html input and append it to the form
 
+      home_tab = tab_buttons[0]
+      home_tab.children[0].classList.add('hidden')
+      home_tab.append(getloadingwheel())
+
       fetch("https://api.imgur.com/3/image/", { // send the data to the imgur api, with fetch post reqeust.
           method: "post",
           headers: {
@@ -204,6 +228,9 @@ myCodeMirror.setSize(240, 250); // size of the code block
           },
           body: formdata
       }).then(data => data.json()).then(data => {
+
+        home_tab.children[1].remove()
+        home_tab.children[0].classList.remove('hidden')
 
         // delete the existing qr code 
         if ( document.querySelector('#qrcode') !== undefined){
