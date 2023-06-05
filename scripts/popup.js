@@ -36,7 +36,6 @@ const tabs = await chrome.tabs.query({
   active: true,
   currentWindow: true
 });
-console.log(tabs)
 
 // renders the qr code for the active tab we get from the chrome api
 
