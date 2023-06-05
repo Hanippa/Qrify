@@ -8,11 +8,6 @@
   Your All-in-One QR Code Generator for Chrome
 </p>
 
-<p align="center">
-  <a href="https://chrome.google.com/webstore/detail/qrify-qr-code-generator/your-extension-id" alt="Download QRify">
-    <img src="download-button.png" alt="Download QRify" />
-  </a>
-</p>
 
 <p align="center">
   <em>Unlock the potential of QR codes with QRify, the ultimate QR code generator designed exclusively for your browser. Seamlessly creating QR codes for URLs, images, code snippets, and messages, QRify revolutionizes the way you connect, share, and communicate online.</em>
