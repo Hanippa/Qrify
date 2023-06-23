@@ -9,6 +9,49 @@
     --line-color: #121212;
     
 }
+.color-picker{
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 56px;
+    right: 30px;
+    border: 2px solid var(--text-color);
+    border-radius: 39px;
+}
+.color-picker-label{
+    color: var(--text-color);
+    padding: 0px 5px;
+    position: absolute;
+    top: 54px;
+    right: 65px;
+    background-color: var(--bg-color);
+    border-radius: 39px;
+    font-size: 18px;
+
+}
+.size-picker{
+    background-color: var(--bg-color);
+    width: 50px;
+    height: 25px;
+    position: absolute;
+    border: 2px solid var(--text-color);
+    top: 54px;
+    left: 90px;
+    border-radius: 39px;
+    font-size: 15px;
+    padding: 0px 5px;
+}
+.size-picker-label{
+    color: var(--text-color);
+    padding: 0px 5px;
+    position: absolute;
+    top: 56px;
+    left: 30px;
+    background-color: var(--bg-color);
+    border-radius: 39px;
+    font-size: 18px;
+
+}
 body{
     width: 300px;
     height: 540px;
@@ -57,6 +100,10 @@ body{
     border-radius: 20px;
     padding: 20px 10px;
 
+}
+.qrcode canvas {
+    width: 90%;
+    height: 100%;
 }
 .url{
     height: 10%;

@@ -5,15 +5,21 @@ const getloadingwheel = () => {
   return wheel
 }
 
+let qr_color = '#30475E'
+let save_title = ''
+let text_temp = ''
+let qr_size = 500
+
 const renderQr = (text) =>{
   try{
+    text_temp = text
     QrCreator.render({
       text: text,
       radius: 0.5, // 0.0 to 0.5
       ecLevel: 'H', // L, M, Q, H
-      fill: '#30475E', // foreground color
+      fill: qr_color, // foreground color
       background: null, // color or null for transparent
-      size: 230 // in pixels
+      size: qr_size // in pixels (230)
     }, document.querySelector('#qrcode'));
   }
   catch{
@@ -40,6 +46,7 @@ const tabs = await chrome.tabs.query({
 // renders the qr code for the active tab we get from the chrome api
 
   renderQr(tabs[0].url)
+  save_title = tabs[0].title
 
 
 const url = document.getElementsByClassName('url-input')[0]
@@ -52,6 +59,27 @@ url.addEventListener('input' , () => {
   
     renderQr(url.value)
 })
+const color_picker = document.getElementsByClassName('color-picker')[0]
+color_picker.addEventListener('change' , () => {
+  qr_color = color_picker.value
+  if ( document.querySelector('#qrcode') !== undefined){
+    document.querySelector('#qrcode').innerHTML = ''
+  }
+
+  renderQr(text_temp)
+})
+
+const size_picker = document.getElementsByClassName('size-picker')[0]
+size_picker.addEventListener('change' , () => {
+  qr_size = size_picker.value
+  if ( document.querySelector('#qrcode') !== undefined){
+    document.querySelector('#qrcode').innerHTML = ''
+  }
+
+  renderQr(text_temp)
+})
+
+
 
 //adds the url of the active tab to the url field in the html
 url.value = tabs[0].url
@@ -61,9 +89,12 @@ const exportbtn = document.getElementsByClassName('export')[0]; // the export bu
 //download the rendered qr code with the chrome api
 exportbtn.onclick = () => {  chrome.downloads.download({
   url: document.querySelector('.qrcode canvas').toDataURL('image/png'),
-  filename: `${tabs[0].title}-qrify.png`, // the file name, will be the title of the active tab + qrify and file extention.
+  filename: `${save_title}-qrify.png`, // the file name, will be the title of the active tab + qrify and file extention.
   saveAs: true  
 });}
+
+
+
 
 const copybtn = document.getElementsByClassName('copy')[0]; // the copy button in the home screen
 //copy the rendered qr code with the chrome api
@@ -186,6 +217,7 @@ code_send_button.addEventListener('click' , () => {
     //render a new qr code for the code
       renderQr(`https://www.pastebin.run/${data}`)
     url.value = 'your code 😳'
+    save_title = user_code.slice(0, 7)
   }).catch((e) => {
     home_tab.children[1].remove()
     home_tab.children[0].classList.remove('hidden')
@@ -228,6 +260,7 @@ object_send_button.addEventListener('click' , () => {
   //render a new qr code for the ojbect
     renderQr(`https://www.pastebin.run/${data}`)
     url.value = 'your message 😳'
+    save_title = document.getElementsByClassName('object-subject')[0].value
 }).catch((e) => {
   home_tab.children[1].remove()
   home_tab.children[0].classList.remove('hidden')
@@ -269,6 +302,7 @@ object_send_button.addEventListener('click' , () => {
       //render a new qr code for the image
        renderQr(data.data.link)
         url.value = 'your image 😳'
+        save_title = user_image.files[0].name.split(".")[0];
     }).catch((e) => {
       home_tab.children[1].remove()
       home_tab.children[0].classList.remove('hidden')
