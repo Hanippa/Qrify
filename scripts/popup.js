@@ -1,8 +1,14 @@
 // a function for creating a loading wheel element
-const getloadingwheel = () => {
+const getloadingwheel = (size='small') => {
   const wheel = document.createElement('div')
-  wheel.classList.add('loader')
-  return wheel
+  if (size === 'large'){
+    wheel.classList.add('loader-large')
+    return wheel
+  }
+  else{
+    wheel.classList.add('loader')
+    return wheel
+  }
 }
 
 let qr_color = '#30475E'
@@ -10,21 +16,37 @@ let save_title = ''
 let text_temp = ''
 let qr_size = 500
 
+
 const renderQr = (text) =>{
   try{
     text_temp = text
     QrCreator.render({
       text: text,
       radius: 0.5, // 0.0 to 0.5
-      ecLevel: 'H', // L, M, Q, H
+      ecLevel: 'H', // L, M, Q, H   radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
       fill: qr_color, // foreground color
       background: null, // color or null for transparent
       size: qr_size // in pixels (230)
     }, document.querySelector('#qrcode'));
   }
-  catch{
+  catch (e){
+    console.log(e)
     document.querySelector('#qrcode').innerText = 'failed to render qr code :('
   }
+}
+
+const changeTab = (tab_button) => {
+
+  let selected_tab = document.getElementsByClassName('tab-selected')[0]
+
+  selected_tab.classList.remove('tab-selected')
+  document.getElementsByClassName(selected_tab.value)[0].classList.remove('tab-on')
+
+  selected_tab = tab_button // saves to selected tab for later use
+  tab_button.classList.add('tab-selected')
+  document.getElementsByClassName(tab_button.value)[0].classList.add('tab-on')
+
+
 }
 
 // the main function (self invoking) will run everytime the extention is opened
@@ -111,24 +133,13 @@ copybtn.onclick = () => {
 }
 
 const tab_buttons = document.getElementsByClassName('tab');
-let selected_tab = document.getElementsByClassName('tab-selected')[0]
 
 // loops over all the tabs and adds an event listener to each tab. the event listener adds a class name to the selected tab with different styles to indicate which tab is selected.
 for (let tab_button of tab_buttons){
   tab_button.addEventListener('click' , () => {
-
-    selected_tab.classList.remove('tab-selected')
-    document.getElementsByClassName(selected_tab.value)[0].classList.remove('tab-on')
-
-    selected_tab = tab_button // saves to selected tab for later use
-    tab_button.classList.add('tab-selected')
-    document.getElementsByClassName(tab_button.value)[0].classList.add('tab-on')
-
-
+    changeTab(tab_button)
   })
-
 }
-
 
 // creating a code block useing the code mirror library
 let myCodeMirror
@@ -191,12 +202,17 @@ let user_code = myCodeMirror.getValue()
 
 // adds an event listener to the "qrify" button on the code tab. the event listener creates a form with the data from the code block, sends it to the pastebin api and renders a new qr code.
 code_send_button.addEventListener('click' , () => {
+  changeTab(document.getElementsByClassName('tab')[0])
   user_code = myCodeMirror.getValue() // get the code from the code block
   const formdata = new FormData()
   formdata.append("code", user_code)
   formdata.append("language", selected.dataset.pastebin) // get the selected language
 
   // adds a loading wheel and hides the home icon
+  const qr_container = document.getElementById('qrcode')
+  qr_container.children[0].classList.add('hidden');
+  qr_container.append(getloadingwheel('large'));
+  
   home_tab = tab_buttons[0]
   home_tab.children[0].classList.add('hidden')
   home_tab.append(getloadingwheel())
@@ -232,8 +248,12 @@ let user_object = `${document.getElementsByClassName('object-subject')[0].value}
 
 // adds an event listener to the "qrify" button on the object tab.  the event listener creates a form with the data from the object, sends it to the pastebin api and renders a new qr code.
 object_send_button.addEventListener('click' , () => {
-
+  changeTab(document.getElementsByClassName('tab')[0])
   // adds a loading wheel and hides the home icon
+  const qr_container = document.getElementById('qrcode')
+  qr_container.children[0].classList.add('hidden');
+  qr_container.append(getloadingwheel('large'));
+
   home_tab = tab_buttons[0]
   home_tab.children[0].classList.add('hidden')
   home_tab.append(getloadingwheel())
@@ -275,15 +295,19 @@ object_send_button.addEventListener('click' , () => {
   
   // / adds an event listener to the "qrify" button on the image tab.  the event listener creates a form with the data from the image, sends it to the pastebin api and renders a new qr code.
   image_send_button.addEventListener('click', () => {
-    const formdata = new FormData()
-    formdata.append("image", user_image.files[0]) // get the image from the html input and append it to the form
-
+    changeTab(document.getElementsByClassName('tab')[0])
+    const formdata = new FormData();
+    formdata.append("image", user_image.files[0]); // get the image from the html input and append it to the form
     // adds a loading wheel and hides the home icon
-    home_tab = tab_buttons[0]
-    home_tab.children[0].classList.add('hidden')
-    home_tab.append(getloadingwheel())
+    const qr_container = document.getElementById('qrcode')
+    qr_container.children[0].classList.add('hidden');
+    qr_container.append(getloadingwheel('large'));
 
-    fetch("https://api.imgur.com/3/image/", { // send the data to the imgur api, with fetch post reqeust.
+    const home_tab = tab_buttons[0];
+    home_tab.children[0].classList.add('hidden');
+    home_tab.append(getloadingwheel());
+
+    fetch("https://api.imgur.com/3/image/", { // send the dasta to the imgur api, with fetch post reqeust.
         method: "post",
         headers: {
             Authorization: "Client-ID 93189a52ea5087c"
