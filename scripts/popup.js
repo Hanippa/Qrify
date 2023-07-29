@@ -15,6 +15,7 @@ let qr_color = '#30475E'
 let save_title = ''
 let text_temp = ''
 let qr_size = 500
+const title_regex = /[^a-z\s-]/gi;;
 
 
 const renderQr = (text) =>{
@@ -109,9 +110,10 @@ url.value = tabs[0].url
 const exportbtn = document.getElementsByClassName('export')[0]; // the export button in the home screen
 
 //download the rendered qr code with the chrome api
-exportbtn.onclick = () => {  chrome.downloads.download({
+exportbtn.onclick = () => { 
+  chrome.downloads.download({
   url: document.querySelector('.qrcode canvas').toDataURL('image/png'),
-  filename: `${save_title}-qrify.png`, // the file name, will be the title of the active tab + qrify and file extention.
+  filename: `${save_title.replace(title_regex, '')}-qrify.png`, // the file name, will be the title of the active tab + qrify and file extention.
   saveAs: true  
 });}
 
@@ -278,7 +280,7 @@ object_send_button.addEventListener('click' , () => {
     document.querySelector('#qrcode').innerHTML = ''
   }
   //render a new qr code for the ojbect
-    renderQr(`https://www.pastebin.run/${data}`)
+    renderQr(`https://www.pastebin.run/${data}.txt`)
     url.value = 'your message 😳'
     save_title = document.getElementsByClassName('object-subject')[0].value
 }).catch((e) => {
@@ -307,7 +309,7 @@ object_send_button.addEventListener('click' , () => {
     home_tab.children[0].classList.add('hidden');
     home_tab.append(getloadingwheel());
 
-    fetch("https://api.imgur.com/3/image/", { // send the dasta to the imgur api, with fetch post reqeust.
+    fetch("https://api.imgur.com/3/image/", { // send the data to the imgur api, with fetch post reqeust.
         method: "post",
         headers: {
             Authorization: "Client-ID 93189a52ea5087c"
