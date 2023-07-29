@@ -81,6 +81,24 @@
     <button class="send-image">Qrify</button>
    
   </div>
+  <div class="tab-container scanner">
+
+    <input  accept="image/*" type="file" name="qr-image" id="qr-image-input" class="hidden">
+    <label for="qr-image-input" class="custom-file-input">choose qr code<span class="material-symbols-outlined">
+      upload
+      </span></label>
+
+      <div class="qr-result-container">
+        <div class="qr-result">
+          
+        </div>
+    <div class="qr-image-container">
+
+    </div>
+  </div>
+    <button class="send-qr-image">scan</button>
+   
+  </div>
 
 
     <div class="footer">
@@ -96,10 +114,14 @@
           <button value="image" class="tab"><span class="material-symbols-outlined">
             image
             </span></button>
+            <button value="scanner" class="tab"><span class="material-symbols-outlined">
+              qr_code_scanner
+              </span></button>
     </div>
   </div>
 
 <script id="qrscript" type="module" src="scripts/qrcreator/src/qr-creator.js"></script>
+<script id="jsqr" type="module" src="scripts/jsqr/jsQR.min.js"></script>
 <script src="scripts/codemirror/lib/codemirror.js"></script> 
 <script  src="scripts/codemirror/mode/javascript/javascript.js" ></script>
 <script  src="scripts/codemirror/mode/python/python.js" ></script>

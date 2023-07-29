@@ -23,7 +23,7 @@ const renderQr = (text) =>{
     text_temp = text
     QrCreator.render({
       text: text,
-      radius: 0.5, // 0.0 to 0.5
+      radius: 0.0, // 0.0 to 0.5
       ecLevel: 'H', // L, M, Q, H   radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
       fill: qr_color, // foreground color
       background: null, // color or null for transparent
@@ -173,6 +173,29 @@ for(let button of code_actions) {
       button.classList.add('code-selected');
 })};
 
+const qr_image_input = document.getElementById('qr-image-input');
+const qr_image_container = document.getElementsByClassName('qr-image-container')[0];
+qr_image_input.onchange = (event) => {
+    //if the user already uploaded an image
+    if (document.getElementsByClassName('user-qr-image')[0] !== undefined){
+      document.getElementsByClassName('user-qr-image')[0].remove() // delete the previous image
+    };
+    //try showing the user uploaded image on the extention
+    try{
+      const user_image = document.createElement('img');
+      user_image.classList.add('user-qr-image')
+      user_image.src = URL.createObjectURL(event.target.files[0]);
+      qr_image_container.innerHTML = '';
+      qr_image_container.append(user_image);
+    }
+    // if the program failed to load the image an error message will be added
+    catch{
+      const error_image = document.createElement('h4');
+      error_image.innerText = 'Failed to load image :(';
+      qr_image_container.innerHTML = '';
+      qr_image_container.append(error_image);
+    }
+}
 
 const image_input = document.getElementById('image-input');
 const image_container = document.getElementsByClassName('image-container')[0];
@@ -188,12 +211,14 @@ image_input.onchange = (event) => {
     const user_image = document.createElement('img');
     user_image.classList.add('user-image')
     user_image.src = URL.createObjectURL(event.target.files[0]);
+    image_container.innerHTML = '';
     image_container.append(user_image);
   }
   // if the program failed to load the image an error message will be added
   catch{
     const error_image = document.createElement('h1');
     error_image.innerText = 'Failed to load image :(';
+    image_container.innerHTML = '';
     image_container.append(error_image);
   }
 
@@ -291,6 +316,54 @@ object_send_button.addEventListener('click' , () => {
 
      
   })
+
+
+  const scan_qr = (imageElement) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const { width, height } = imageElement;
+
+    // Set the canvas dimensions to match the image
+    canvas.width = width;
+    canvas.height = height;
+
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, width, height);
+
+    // Draw the image onto the canvas
+    ctx.drawImage(imageElement, 0, 0, width, height);
+
+    // Get the image data from the canvas
+    const imageData = ctx.getImageData(0, 0, width, height);
+
+    // Scan the QR code from the image data
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+    if (code) {
+      // QR code found
+      return code.data;
+    }
+      return 'no qr code found in the image 🥺';
+  }
+
+
+  const qr_image_send_button = document.getElementsByClassName('send-qr-image')[0]
+  qr_image_send_button.addEventListener('click', () => {
+
+    const imageElement = document.getElementsByClassName('user-qr-image')[0];
+    let qr_result;
+    if(imageElement){
+      qr_result = scan_qr(imageElement);
+    }
+    else{
+      qr_result = 'you must choose an image of a qr code 😗';
+    }
+
+    const regex = /(\b(?:https?:\/\/|www\.)\S+\b)/gi;
+    const replacedContent = qr_result.replace(regex, '<a href="$1" class="highlighted-link" target="_blank">$1</a>');
+    document.getElementsByClassName('qr-result')[0].innerHTML = replacedContent
+    }
+);
 
   const image_send_button = document.getElementsByClassName('send-image')[0]
   let user_image = document.getElementById('image-input')
