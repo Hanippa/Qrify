@@ -20,6 +20,31 @@ const title_regex = /[^a-z\s-]/gi;;
 
 
 
+const add_logo = document.getElementsByClassName('add-logo')[0];
+add_logo.addEventListener('click' , (e) => {
+const qr_canvas = document.querySelector('#qrcode canvas');
+const ctx = qr_canvas.getContext('2d');
+const image = new Image();
+
+// Set the source of the image (replace "image_path.png" with your actual image path)
+image.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Chinese_Dragon.svg/1200px-Chinese_Dragon.svg.png";
+
+// Wait for the image to load before drawing it on the canvas
+image.onload = function () {
+    const desiredWidth = 200;
+    const desiredHeight = 200;
+
+    // Draw the image at the center of the canvas with the desired width and height
+    const centerX = qr_canvas.width / 2 - desiredWidth / 2;
+    const centerY = qr_canvas.height / 2 - desiredHeight / 2;
+    ctx.drawImage(image, centerX, centerY, desiredWidth, desiredHeight);
+    // If you want to draw a portion of the image, you can use the following:
+    // ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, centerX, centerY, destWidth, destHeight);
+};
+
+})
+
+
 const file_tabs = [document.getElementsByClassName('image')[0] , document.getElementsByClassName('scanner')[0]];
 file_tabs.forEach((tab) => {
   tab.addEventListener('paste' , (e) => {

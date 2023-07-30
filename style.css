@@ -260,12 +260,20 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 10%;
+    height: 100%;
     background-color: white;
     border-radius: 20px;
     border: none;
-    padding: 10px;
-    margin: 10px 10px 0px 10px;
+    flex-grow: 1;
+}
+.qr-result-note {
+    font-size: 10px;
+    position: absolute;
+    bottom: 30px;
+    left: 20px;
+    line-height: 2;
+    width: 60%;
+    opacity: 40%;
 }
 .custom-file-input span{
     font-weight: 300;
@@ -279,8 +287,33 @@ body{
     padding: 10px;
     margin: 10px;
 }
+.qr-input-container{
+    height: 20%;
+    margin: 10px 10px 0px 10px;
+    display: flex;
+    gap: 10px;
+
+}
+
+
+.highlighted-link{
+    word-wrap: break-word;
+}
+.add-logo{
+    position: absolute;
+    bottom: 195px;
+    right: 35px;
+    background-color: whitesmoke;
+    border: none;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px 10px;
+
+}
 .qr-result{
-    font-size: 14px;
+    font-size: 17px;
     height: 92%;
     width: 92%;
     padding: 10px;
