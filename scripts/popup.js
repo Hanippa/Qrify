@@ -18,13 +18,77 @@ let qr_size = 500
 const title_regex = /[^a-z\s-]/gi;;
 
 
+
+
+const file_tabs = [document.getElementsByClassName('image')[0] , document.getElementsByClassName('scanner')[0]];
+file_tabs.forEach((tab) => {
+  tab.addEventListener('paste' , (e) => {
+    const items = e.clipboardData?.items;
+  
+    if (items) {
+      // Check if files are present in the clipboard data
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          // Here, you have access to the file from the clipboard
+
+          const file_input = tab.getElementsByClassName('file-input')[0];
+          let list = new DataTransfer();
+          list.items.add(file);
+          file_input.files = list.files;
+          const event = new Event('change', { bubbles: true });
+          file_input.dispatchEvent(event);
+          break; // We only handle the first file found in the clipboard
+        }
+      }
+    }
+  })
+})
+
+const custome_file_input = document.getElementsByClassName('custom-file-input');
+for (element of custome_file_input){
+  const file_input = document.getElementById(element.getAttribute('for'));
+
+
+  element.addEventListener('dragenter',(e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.style = 'border:2px black solid;'
+  });
+  element.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  element.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.style = 'border:none;'
+  });
+
+  element.addEventListener('drop' , (e) => {
+    e.target.style = 'border:none;'
+    e.preventDefault();
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    file_input.files = files;
+    console.log(file_input);
+    const event = new Event('change', { bubbles: true });
+    file_input.dispatchEvent(event);
+  })
+}
+
+
+
+
 const renderQr = (text) =>{
+  
   try{
     text_temp = text
     QrCreator.render({
       text: text,
-      radius: 0.0, // 0.0 to 0.5
-      ecLevel: 'H', // L, M, Q, H   radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+      radius: 0.5, // 0.0 to 0.5
+      ecLevel: 'H', // L, M, Q, H   
       fill: qr_color, // foreground color
       background: null, // color or null for transparent
       size: qr_size // in pixels (230)
@@ -101,6 +165,7 @@ size_picker.addEventListener('change' , () => {
 
   renderQr(text_temp)
 })
+
 
 
 
@@ -184,12 +249,14 @@ qr_image_input.onchange = (event) => {
     try{
       const user_image = document.createElement('img');
       user_image.classList.add('user-qr-image')
+      console.log(event.target.files[0]);
       user_image.src = URL.createObjectURL(event.target.files[0]);
       qr_image_container.innerHTML = '';
       qr_image_container.append(user_image);
     }
     // if the program failed to load the image an error message will be added
-    catch{
+    catch (error){
+      console.log('error : ',error);
       const error_image = document.createElement('h4');
       error_image.innerText = 'Failed to load image :(';
       qr_image_container.innerHTML = '';
@@ -210,12 +277,14 @@ image_input.onchange = (event) => {
   try{
     const user_image = document.createElement('img');
     user_image.classList.add('user-image')
+    console.log(event.target.files[0]);
     user_image.src = URL.createObjectURL(event.target.files[0]);
     image_container.innerHTML = '';
     image_container.append(user_image);
   }
   // if the program failed to load the image an error message will be added
-  catch{
+  catch(error){
+    console.log('error : ',error);
     const error_image = document.createElement('h1');
     error_image.innerText = 'Failed to load image :(';
     image_container.innerHTML = '';
