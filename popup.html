@@ -32,9 +32,11 @@
     <div id="qrcode" class="qrcode">
 
     </div>
-    <button class="add-logo">add logo <span class="material-symbols-outlined">
+    <input enctype="multipart/form-data"  accept="image/*" type="file" name="image" id="add-logo-input" class="hidden file-input">
+    <label for="add-logo-input" class="add-logo">add logo <span class="material-symbols-outlined">
       add_photo_alternate
-      </span></button>
+      </span></label>
+
     <div class="url">
       <input class="url-input" type="text">
     </div>
@@ -95,7 +97,7 @@
 
       <div class="qr-result-container">
         <div class="qr-result">
-          <h1 class="qr-result-note">* choose an image of a qr code to scan or copy and paste it here</h1>
+          <h1 class="qr-result-note">ctrl + V to paste</h1>
         </div>
     <div class="qr-image-container">
 

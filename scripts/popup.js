@@ -15,34 +15,59 @@ let qr_color = '#30475E'
 let save_title = ''
 let text_temp = ''
 let qr_size = 500
+let logo_image = null;
 const title_regex = /[^a-z\s-]/gi;;
 
 
 
+const draw_logo = (logo_img) => {
+  const qr_canvas = document.querySelector('#qrcode canvas');
+  const ctx = qr_canvas.getContext('2d');
+  const image = new Image();
+  
+  // Set the source of the image (replace "image_path.png" with your actual image path)
+  
+  image.src = URL.createObjectURL(logo_img);
+  
+  // Wait for the image to load before drawing it on the canvas
+  image.onload = function () {
+    const desiredWidth = qr_size / 4;
+    const desiredHeight = qr_size / 4;
 
-const add_logo = document.getElementsByClassName('add-logo')[0];
-add_logo.addEventListener('click' , (e) => {
-const qr_canvas = document.querySelector('#qrcode canvas');
-const ctx = qr_canvas.getContext('2d');
-const image = new Image();
+    // Calculate the center position to draw the image and circle
+    const centerX = qr_canvas.width / 2;
+    const centerY = qr_canvas.height / 2;
 
-// Set the source of the image (replace "image_path.png" with your actual image path)
-image.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Chinese_Dragon.svg/1200px-Chinese_Dragon.svg.png";
+    // Calculate the radius of the circle (adding a little extra)
+    const extraPadding = qr_size / 50;
+    const radius = Math.max(desiredWidth, desiredHeight) / 2 + extraPadding;
 
-// Wait for the image to load before drawing it on the canvas
-image.onload = function () {
-    const desiredWidth = 200;
-    const desiredHeight = 200;
+    // Draw the circle
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = qr_color;
+    ctx.fill();
 
-    // Draw the image at the center of the canvas with the desired width and height
-    const centerX = qr_canvas.width / 2 - desiredWidth / 2;
-    const centerY = qr_canvas.height / 2 - desiredHeight / 2;
-    ctx.drawImage(image, centerX, centerY, desiredWidth, desiredHeight);
-    // If you want to draw a portion of the image, you can use the following:
-    // ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, centerX, centerY, destWidth, destHeight);
-};
+    // Draw the image at the center of the circle with the desired width and height
+    const imageX = centerX - desiredWidth / 2;
+    const imageY = centerY - desiredHeight / 2;
+    ctx.drawImage(image, imageX, imageY, desiredWidth, desiredHeight);
+  };
+}
 
-})
+
+const add_logo = document.getElementById('add-logo-input');
+
+add_logo.onchange = (event) => {
+  logo_image = event.target.files[0];
+  if ( document.querySelector('#qrcode') !== undefined){
+    document.querySelector('#qrcode').innerHTML = '';
+  };
+  renderQr(text_temp);
+  draw_logo(logo_image);
+
+  
+}
 
 
 const file_tabs = [document.getElementsByClassName('image')[0] , document.getElementsByClassName('scanner')[0]];
@@ -178,7 +203,11 @@ color_picker.addEventListener('change' , () => {
     document.querySelector('#qrcode').innerHTML = ''
   }
 
-  renderQr(text_temp)
+
+  renderQr(text_temp);
+  if(logo_image){
+    draw_logo(logo_image);
+  }
 })
 
 const size_picker = document.getElementsByClassName('size-picker')[0]
@@ -188,7 +217,10 @@ size_picker.addEventListener('change' , () => {
     document.querySelector('#qrcode').innerHTML = ''
   }
 
-  renderQr(text_temp)
+  renderQr(text_temp);
+  if(logo_image){
+    draw_logo(logo_image);
+  }
 })
 
 
@@ -274,14 +306,12 @@ qr_image_input.onchange = (event) => {
     try{
       const user_image = document.createElement('img');
       user_image.classList.add('user-qr-image')
-      console.log(event.target.files[0]);
       user_image.src = URL.createObjectURL(event.target.files[0]);
       qr_image_container.innerHTML = '';
       qr_image_container.append(user_image);
     }
     // if the program failed to load the image an error message will be added
     catch (error){
-      console.log('error : ',error);
       const error_image = document.createElement('h4');
       error_image.innerText = 'Failed to load image :(';
       qr_image_container.innerHTML = '';
@@ -302,14 +332,12 @@ image_input.onchange = (event) => {
   try{
     const user_image = document.createElement('img');
     user_image.classList.add('user-image')
-    console.log(event.target.files[0]);
     user_image.src = URL.createObjectURL(event.target.files[0]);
     image_container.innerHTML = '';
     image_container.append(user_image);
   }
   // if the program failed to load the image an error message will be added
   catch(error){
-    console.log('error : ',error);
     const error_image = document.createElement('h1');
     error_image.innerText = 'Failed to load image :(';
     image_container.innerHTML = '';
@@ -437,7 +465,7 @@ object_send_button.addEventListener('click' , () => {
       // QR code found
       return code.data;
     }
-      return 'no qr code found in the image 🥺';
+      return 'no qr code found in the image, you can try to crop it 🥺';
   }
 
 
