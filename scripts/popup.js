@@ -21,6 +21,7 @@ const title_regex = /[^a-z\s-]/gi;;
 
 
 const draw_logo = (logo_img) => {
+  console.log('drawing logo');
   const qr_canvas = document.querySelector('#qrcode canvas');
   const ctx = qr_canvas.getContext('2d');
   const image = new Image();
@@ -63,8 +64,10 @@ add_logo.onchange = (event) => {
   if ( document.querySelector('#qrcode') !== undefined){
     document.querySelector('#qrcode').innerHTML = '';
   };
+  console.log('rendering new qr code');
   renderQr(text_temp);
   draw_logo(logo_image);
+  event.target.value = null;
 
   
 }
@@ -195,6 +198,9 @@ url.addEventListener('input' , () => {
   }
   
     renderQr(url.value)
+    if(logo_image){
+      draw_logo(logo_image);
+    }
 })
 const color_picker = document.getElementsByClassName('color-picker')[0]
 color_picker.addEventListener('change' , () => {
