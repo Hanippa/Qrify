@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Qrify",
   "description": "QR code generator, the ultimate QRcode generator for the browser, for urls images code and messages.",
-  "version": "4.0",
+  "version": "5.0",
   "author": "https://github.com/hanippa", 
   "icons": {
     "16": "images/icon-16.png",
