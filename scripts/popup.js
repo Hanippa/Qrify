@@ -1,5 +1,4 @@
 
-// 540 lines of code - starting size - new size 407
 
 // this code is devided to 3 parts, function -> events -> actions
 
@@ -14,8 +13,9 @@
   let logo_image = null;
   let title_regex = /[^a-z\s-]/gi;
   let qr_container = document.getElementById('qrcode');
+  let qr_canvas = null;
   let tab_buttons = document.getElementsByClassName('tab');
-  let selected_tab_button = document.getElementsByClassName('selected-tab-button')[0];
+  let selected_tab_button = document.getElementsByClassName('tab-button-selected')[0];
   let selected_tab = document.getElementsByClassName('tab-on')[0];
   let code_container = document.getElementsByClassName('code-container')[0];
   let user_code = '';
@@ -100,9 +100,9 @@
         background: null, // color or null for transparent
         size: qr_size // in pixels
       }, document.querySelector('#qrcode'));
+      qr_canvas = document.querySelector('#qrcode canvas');
     }
-    catch (e){
-      console.log(e);
+    catch{
       qr_container.innerText = 'failed to render qr code :(';
     };
   }
@@ -111,11 +111,8 @@
   const changeTab = (tab_button) => {
     selected_tab_button.classList.remove('tab-button-selected'); //remove selected class from previous tab button
     selected_tab.classList.remove('tab-on');//remove on class from previous tab
-
-
     selected_tab_button = tab_button;//save new selected tab button to the main scope
     selected_tab = document.getElementsByClassName(tab_button.value)[0];//save new selected tab to the main scope
-
     selected_tab_button.classList.add('tab-button-selected');//add selected class to new selected tab button
     selected_tab.classList.add('tab-on');//add on class to new selected tab
   }
@@ -132,7 +129,7 @@
   const image = document.createElement('img');
   image.classList.add('user-qr-image');
   image.src = URL.createObjectURL(image_file);
-  container.append(user_image);
+  container.append(image);
 }
 
 //function 8 - add a loading wheel to a container
@@ -190,9 +187,9 @@ const color_picker = document.getElementsByClassName('color-picker')[0]; // colo
 color_picker.addEventListener('change' , () => {
   qr_color = color_picker.value; // save the qr color to the main scope
   clean_container(qr_container);
-  renderQr(text_temp);
+  renderQr(qr_text);
   if(logo_image){
-    draw_logo(logo_image);
+    draw_logo(logo_image , qr_canvas);
   };
 });
 
@@ -202,7 +199,7 @@ url.addEventListener('input' , () => {
     clean_container(qr_container);
     renderQr(url.value)
     if(logo_image){
-      draw_logo(logo_image);
+      draw_logo(logo_image , qr_canvas);
     };
 });
 
@@ -211,13 +208,23 @@ const size_picker = document.getElementsByClassName('size-picker')[0]; // size i
 size_picker.addEventListener('change' , () => {
   qr_size = size_picker.value;  // save the qr color to the main scope
   clean_container(qr_container);
-  renderQr(text_temp);
+  renderQr(qr_text);
   if(logo_image){
-    draw_logo(logo_image);
+    draw_logo(logo_image , qr_canvas);
   };
 });
 
-//event 5 - adds an event listener to the size input field, any time the button is clicked, the rendered qr code is downloaded with the chrome api
+//event 5 - adds an event listener to the add logo button, any time the button is clicked, the the image the user selects will be rendered at the center of the qr code.
+const add_logo = document.getElementById('add-logo-input');
+add_logo.addEventListener('change' , (event) => {
+  logo_image = event.target.files[0]; // save the logo to the main scope
+  clean_container(qr_container);
+  renderQr(qr_text); // rerender the qr code, to remove any existing logos
+  draw_logo(logo_image , qr_canvas);
+  event.target.value = null;
+});
+
+//event 6 - adds an event listener to the export button, any time the button is clicked, the rendered qr code is downloaded with the chrome api.
 const exportbtn = document.getElementsByClassName('export')[0]; // the export button in the home screen
 exportbtn.addEventListener('click' , () => { 
   try{
@@ -232,7 +239,7 @@ exportbtn.addEventListener('click' , () => {
 });
 
 
-//event 6 - adds an event listener to the copy button, any time the button is clicked, the rendered qr code is copied with the chrome api
+//event 7 - adds an event listener to the copy button, any time the button is clicked, the rendered qr code is copied with the chrome api
 const copybtn = document.getElementsByClassName('copy')[0]; // the copy button in the home screen
 copybtn.addEventListener('click' , () => { 
   try {
@@ -246,7 +253,7 @@ copybtn.addEventListener('click' , () => {
 };
 });
 
-//event 7 - // loops over all the code language options, and adds an event listener to each option. the event listener adds a class for styling.
+//event 8 - // loops over all the code language options, and adds an event listener to each option. the event listener adds a class for styling.
 const code_actions = document.getElementsByClassName('code-action');
 for(let button of code_actions) {
   button.addEventListener('click', () => {
@@ -256,7 +263,7 @@ for(let button of code_actions) {
       button.classList.add('code-selected');
 })};
 
-//event 8 -  adds an event listener to the qr code file input, any time the file input changes, the image will show in the container
+//event 9 -  adds an event listener to the qr code file input, any time the file input changes, the image will show in the container
 const qr_image_input = document.getElementById('qr-image-input');
 const qr_image_container = document.getElementsByClassName('qr-image-container')[0];
 qr_image_input.addEventListener('change' , (event) => {
@@ -270,26 +277,90 @@ qr_image_input.addEventListener('change' , (event) => {
 });
 
 
-//event 9 -  adds an event listener to the image file input, any time the file input changes, the image will show in the container
+//event 10 -  adds an event listener to the image file input, any time the file input changes, the image will show in the container
 const image_input = document.getElementById('image-input');
 const image_container = document.getElementsByClassName('image-container')[0];
 image_input.addEventListener('change' , (event) => {
-  //if the user already uploaded an image
-  clean_container(image_container);
-  //try showing the user uploaded image on the extention
-  try{
-    add_container_image(event.target.files[0]);
+  clean_container(image_container);  //if the user already uploaded an image
+  try{  //try showing the user uploaded image on the extention
+    add_container_image(image_container , event.target.files[0]);
   }
-  // if the program failed to load the image an error message will be added
-  catch(error){
+  catch{  // if the program failed to load the image an error message will be added
     container_error(image_container , 'Failed to load image :(');
   };
 }); 
 
+//event 11 - adds an event listener to the "scan" button on the scanning tab.  the event scans the qr code from image with the jsqr library
+const qr_image_send_button = document.getElementsByClassName('send-qr-image')[0]
+qr_image_send_button.addEventListener('click', () => {
+  const imageElement = document.getElementsByClassName('user-qr-image')[0];
+  let qr_result;
+  if(imageElement){
+    qr_result = scan_qr(imageElement);
+  }
+  else{
+    qr_result = 'you must choose an image of a qr code 😗';
+  }
+  const regex = /(\b(?:https?:\/\/|www\.)\S+\b)/gi;
+  const replacedContent = qr_result.replace(regex, '<a href="$1" class="highlighted-link" target="_blank">$1</a>');
+  document.getElementsByClassName('qr-result')[0].innerHTML = replacedContent
+});
+
+//event 12 - add a paste event to all the file tabs, when a file is pasted in them the file gets add to the file input present in the tab, and triggering its change event
+const file_tabs = document.getElementsByClassName('file-tab');
+for (tab of file_tabs){
+  tab.addEventListener('paste' , (e) => {
+    const items = e.clipboardData?.items;
+    if (items) {// Check if files are present in the clipboard data
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          const file_input = tab.getElementsByClassName('file-input')[0];
+          let list = new DataTransfer();
+          list.items.add(file);
+          file_input.files = list.files;
+          const event = new Event('change', { bubbles: true });
+          file_input.dispatchEvent(event);
+          break; // only handle the first file found in the clipboard
+        }
+      }
+    }
+  });
+}
+
+//event 13 - add event listeners to all file input to enable file drag and drop functionalit
+const custom_file_input = document.getElementsByClassName('custom-file-input');
+for (element of custom_file_input){
+  const file_input = document.getElementById(element.getAttribute('for'));
+  element.addEventListener('dragenter',(e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.style = 'border:2px black solid;'
+  });
+  element.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  });
+  element.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.target.style = 'border:none;'
+  });
+  element.addEventListener('drop' , (e) => {
+    e.target.style = 'border:none;'
+    e.preventDefault();
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    file_input.files = files;
+    const event = new Event('change', { bubbles: true });
+    file_input.dispatchEvent(event);
+  })
+}
 
 // qrify events 
 
-//event 10 - adds an event listener to the "qrify" button on the code tab. the event listener creates a form with the data from the code block, sends it to the pastebin api and renders a new qr code.
+//event 12 - adds an event listener to the "qrify" button on the code tab. the event listener creates a form with the data from the code block, sends it to the pastebin api and renders a new qr code.
 const object_send_button = document.getElementsByClassName('send-code')[0];
 object_send_button.addEventListener('click' , () => {
   user_code = myCodeMirror.getValue(); // get the code from the code block
@@ -314,7 +385,7 @@ object_send_button.addEventListener('click' , () => {
 
 
 
-//event 11 - adds an event listener to the "qrify" button on the message tab. the event listener creates a form with the data from the message block, sends it to the pastebin api and renders a new qr code.
+//event 13 - adds an event listener to the "qrify" button on the message tab. the event listener creates a form with the data from the message block, sends it to the pastebin api and renders a new qr code.
 const code_send_button = document.getElementsByClassName('send-code')[0];
 code_send_button.addEventListener('click' , () => {
   changeTab(tab_buttons[0]); // go to the home tab
@@ -339,7 +410,7 @@ code_send_button.addEventListener('click' , () => {
 
 
 
-  //event 12 - adds an event listener to the "qrify" button on the image tab.  the event listener creates a form with the data from the image, sends it to the imgur api and renders a new qr code.
+  //event 14 - adds an event listener to the "qrify" button on the image tab.  the event listener creates a form with the data from the image, sends it to the imgur api and renders a new qr code.
   const image_send_button = document.getElementsByClassName('send-image')[0];
   let user_image = document.getElementById('image-input');
   image_send_button.addEventListener('click', () => {
@@ -365,22 +436,6 @@ code_send_button.addEventListener('click' , () => {
     })
   })
 
-  //event 13 - adds an event listener to the "scan" button on the scanning tab.  the event scans the qr code from image with the jsqr library
-  const qr_image_send_button = document.getElementsByClassName('send-qr-image')[0]
-  qr_image_send_button.addEventListener('click', () => {
-    const imageElement = document.getElementsByClassName('user-qr-image')[0];
-    let qr_result;
-    if(imageElement){
-      qr_result = scan_qr(imageElement);
-    }
-    else{
-      qr_result = 'you must choose an image of a qr code 😗';
-    }
-    const regex = /(\b(?:https?:\/\/|www\.)\S+\b)/gi;
-    const replacedContent = qr_result.replace(regex, '<a href="$1" class="highlighted-link" target="_blank">$1</a>');
-    document.getElementsByClassName('qr-result')[0].innerHTML = replacedContent
-    }
-);
 
 
 //section 3 - actions
