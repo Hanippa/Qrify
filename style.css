@@ -1,5 +1,8 @@
 
-
+@font-face {
+    font-family: 'Readex Pro';
+    src: url('fonts/ReadexPro-Light.ttf') format('truetype');
+}
 *{
     margin: 0px;
     font-family: 'Readex Pro', sans-serif;
@@ -8,6 +11,10 @@
     --object-color: #F05454;
     --line-color: #121212;
     
+}
+.message{
+    font-size: 9px;
+    text-align: center;
 }
 .color-picker{
     width: 25px;
@@ -170,6 +177,13 @@ body{
     border: none;
     border-radius: 0px;
     background-color: white
+}
+#symbol-export , #symbol-copy{
+    padding: 4px;
+    filter: invert(1);
+}
+#symbol-add-image{
+    filter: invert(24%) sepia(8%) saturate(2583%) hue-rotate(169deg) brightness(93%) contrast(87%);
 }
 .tab-button-selected{
     background-color: var(--bg-color);

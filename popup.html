@@ -4,19 +4,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="scripts/codemirror/theme/dracula.css">
 <link rel="stylesheet" href="scripts/codemirror/lib/codemirror.css">
-
-
-
   <title>Qrify</title>
 </head>
-<body>
+<body >
   <div class="main-container">
     <div class="title">
       <img id="logo" src="images/icon-32.png" alt="logo">
@@ -33,21 +26,16 @@
 
     </div>
     <input enctype="multipart/form-data"  accept="image/*" type="file" name="image" id="add-logo-input" class="hidden file-input">
-    <label for="add-logo-input" class="add-logo">add logo <span class="material-symbols-outlined">
-      add_photo_alternate
-      </span></label>
+    <label for="add-logo-input" class="add-logo">add logo  <img id="symbol-add-image" src="images/symbols/add_photo.svg" alt="symbol"></label>
 
     <div class="url">
       <input class="url-input" type="text">
     </div>
     <div class="qr-actions">
-      <button class="qr-action export">export <span class="material-symbols-outlined">
-        download
-        </span></button>
-      <button class="qr-action copy">copy<span class="material-symbols-outlined">
-        content_copy
-        </span></button>
+      <button class="qr-action export">export  <img id="symbol-export" src="images/symbols/download.svg" alt="symbol"></button>
+      <button class="qr-action copy">copy<img id="symbol-copy" src="images/symbols/content_copy.svg" alt="symbol"></button>
     </div>
+    <p class="message">thank you for using my extension hope it helps 💖 谢谢</p>
   </div>
 
   <div class="tab-container code">
@@ -77,9 +65,7 @@
   <div class="tab-container image file-tab">
     <div class="qr-input-container">
     <input enctype="multipart/form-data"  accept="image/*" type="file" name="image" id="image-input" class="hidden file-input">
-    <label for="image-input" class="custom-file-input">choose image<span class="material-symbols-outlined">
-      upload
-      </span></label>
+    <label for="image-input" class="custom-file-input">choose image <img id="symbol" src="images/symbols/upload.svg" alt="symbol"></label>
     </div>
     <div class="image-container">
 
@@ -90,9 +76,7 @@
   <div class="tab-container scanner file-tab">
 <div class="qr-input-container">
     <input enctype="multipart/form-data"  accept="image/*" type="file" name="qr-image" id="qr-image-input" class="hidden file-input">
-    <label for="qr-image-input" class="custom-file-input">choose qr code<span class="material-symbols-outlined">
-      upload
-      </span></label>
+    <label for="qr-image-input" class="custom-file-input">choose qr code <img id="symbol" src="images/symbols/upload.svg" alt="symbol"></label>
     </div>
 
       <div class="qr-result-container">
@@ -109,34 +93,26 @@
 
 
     <div class="footer">
-        <button value="home" class="tab tab-button-selected"><span class="material-symbols-outlined">
-          home
-          </span></button>
-        <button value="code" class="tab"><span class="material-symbols-outlined">
-          code
-          </span></button>
-        <button value="object" class="tab"><span class="material-symbols-outlined">
-          data_object
-          </span></button>
-          <button value="image" class="tab"><span class="material-symbols-outlined">
-            image
-            </span></button>
-            <button value="scanner" class="tab"><span class="material-symbols-outlined">
-              qr_code_scanner
-              </span></button>
+        <button value="home" class="tab tab-button-selected"> <img id="symbol" src="images/symbols/home.svg" alt="symbol"></button>
+        <button value="code" class="tab"> <img id="symbol" src="images/symbols/code.svg" alt="symbol"></button>
+        <button value="object" class="tab"> <img id="symbol" src="images/symbols/data_object.svg" alt="symbol"></button>
+          <button value="image" class="tab"> <img id="symbol" src="images/symbols/image.svg" alt="symbol"></button>
+            <button value="scanner" class="tab"> <img id="symbol" src="images/symbols/qr_code_scanner.svg" alt="symbol"></button>
     </div>
   </div>
 
-<script id="qrscript" type="module" src="scripts/qrcreator/qr-creator.js"></script>
-<script id="jsqr" type="module" src="scripts/jsqr/jsQR.min.js"></script>
-<script src="scripts/codemirror/lib/codemirror.js"></script> 
-<script  src="scripts/codemirror/mode/javascript/javascript.js" ></script>
-<script  src="scripts/codemirror/mode/python/python.js" ></script>
-<script  src="scripts/codemirror/mode/textile/textile.js"  defer></script>
-<script  src="scripts/codemirror/mode/xml/xml.js"  ></script>
-<script  src="scripts/codemirror/mode/clike/clike.js" ></script>
-<script  src="scripts/codemirror/mode/shell/shell.js" ></script>
-<script  src="scripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-<script src="scripts/popup.js"></script>
+
+
+<script defer class="qr-script" type="module" src="scripts/qrcreator/qr-creator.js"></script>
+<script src="scripts/loadScanner.js" type="module"></script>
+<script defer class="qr-script" src="scripts/codemirror/lib/codemirror.js"></script> 
+<script defer class="qr-script" src="scripts/codemirror/mode/javascript/javascript.js" ></script>
+<script defer class="qr-script" src="scripts/codemirror/mode/python/python.js" ></script>
+<script defer class="qr-script" src="scripts/codemirror/mode/textile/textile.js"  defer></script>
+<script defer class="qr-script" src="scripts/codemirror/mode/xml/xml.js"  ></script>
+<script defer class="qr-script" src="scripts/codemirror/mode/clike/clike.js" ></script>
+<script defer class="qr-script" src="scripts/codemirror/mode/shell/shell.js" ></script>
+<script defer class="qr-script" src="scripts/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+<script defer class="qr-script" src="scripts/popup.js"></script>
 </body>
 </html>

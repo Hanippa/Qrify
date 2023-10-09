@@ -1,11 +1,16 @@
-
-
 // this code is devided to 3 parts, function -> events -> actions
 
 // main function (self invoking)
 (async () => {
 
+
+const qrScannerModule = await import('./qr-scanner/qr-scanner.min.js');
+const QrScanner = qrScannerModule.default;
+console.log('🤡',QrScanner);
+
     //main scope variables
+  let scripts = document.getElementsByClassName('qr-script');
+  let qr_image = null;
   let qr_color = '#30475E';
   let save_title = '';
   let qr_text = '';
@@ -20,23 +25,13 @@
   let code_container = document.getElementsByClassName('code-container')[0];
   let user_code = '';
   let selected_language = document.getElementsByClassName('code-selected')[0];
-    //gets all active tabs from the chrome api, with any url
-    const tabs = await chrome.tabs.query({
-      url: [
-        "<all_urls>"
-      ],
-      active: true,
-      currentWindow: true
-    });
-
-
-
+  const tabs = await chrome.tabs.query({url: ["<all_urls>"],active: true,currentWindow: true}); // gets all active tabs from the chrome api, with any url
   //sction 1 - functions
-
 
   //function 1 - get loading animation element.
   const getloadingwheel = (size='small') => {
     const wheel = document.createElement('div');
+    wheel.classList.add('loading-wheel');
     switch (size){
       case 'small':
         wheel.classList.add('loader');
@@ -99,7 +94,7 @@
         fill: qr_color, // foreground color
         background: null, // color or null for transparent
         size: qr_size // in pixels
-      }, document.querySelector('#qrcode'));
+      }, qr_container);
       qr_canvas = document.querySelector('#qrcode canvas');
     }
     catch{
@@ -142,32 +137,25 @@ const getContainerLoadingWheel = (container , size='small') => {
 
 //function 9 - remove a loading wheel from a container
 const removeContainerLoadingWheel = (container) => {
-  container.getElementsByClassName('loader')[0].remove();
+  container.getElementsByClassName('loading-wheel')[0].remove();
   for(element of container.children){
     element.classList.remove('hidden');
   };
 }
 
 //fucntion 10 - scan a qr code image 
-const scan_qr = (imageElement) => {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const { width, height } = imageElement;
-  // Set the canvas dimensions to match the image
-  canvas.width = width;
-  canvas.height = height;
-
-  ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, width, height);
-  ctx.drawImage(imageElement, 0, 0, width, height);  // Draw the image onto the canvas
-  const imageData = ctx.getImageData(0, 0, width, height);  // Get the image data from the canvas
-  // Scan the QR code from the image data
-  const code = jsQR(imageData.data, imageData.width, imageData.height);
-  if (code) {
-    // QR code found
-    return code.data;
+const scan_qr = async () => {
+  // Scan the QR code from the qr_image global variable.
+  try{
+    const scan_result = await QrScanner.scanImage(qr_image, { returnDetailedScanResult: true });
+    console.log(scan_result);
+    if(scan_result){
+      return scan_result.data;
+    }
   }
-    return 'no qr code found in the image, you can try to crop it 🥺';
+  catch(e){
+    return e;
+  }
 }
 
 
@@ -269,6 +257,7 @@ const qr_image_container = document.getElementsByClassName('qr-image-container')
 qr_image_input.addEventListener('change' , (event) => {
   clean_container(qr_image_container);   //if the user already uploaded an image
   try{  //try showing the user uploaded image on the extention
+    qr_image = event.target.files[0];
     add_container_image(qr_image_container, event.target.files[0])
   }
   catch{  // if the program failed to load the image an error message will be added
@@ -292,11 +281,11 @@ image_input.addEventListener('change' , (event) => {
 
 //event 11 - adds an event listener to the "scan" button on the scanning tab.  the event scans the qr code from image with the jsqr library
 const qr_image_send_button = document.getElementsByClassName('send-qr-image')[0]
-qr_image_send_button.addEventListener('click', () => {
+qr_image_send_button.addEventListener('click', async () => {
   const imageElement = document.getElementsByClassName('user-qr-image')[0];
   let qr_result;
   if(imageElement){
-    qr_result = scan_qr(imageElement);
+    qr_result = await scan_qr();
   }
   else{
     qr_result = 'you must choose an image of a qr code 😗';
@@ -360,7 +349,7 @@ for (element of custom_file_input){
 
 // qrify events 
 
-//event 12 - adds an event listener to the "qrify" button on the code tab. the event listener creates a form with the data from the code block, sends it to the pastebin api and renders a new qr code.
+//event 14 - adds an event listener to the "qrify" button on the code tab. the event listener creates a form with the data from the code block, sends it to the pastebin api and renders a new qr code.
 const object_send_button = document.getElementsByClassName('send-code')[0];
 object_send_button.addEventListener('click' , () => {
   user_code = myCodeMirror.getValue(); // get the code from the code block
@@ -373,7 +362,7 @@ object_send_button.addEventListener('click' , () => {
       method: "post",
       body: formdata
   }).then(data => data.text()).then(data => {
-    removeContainerLoadingWheel(qr_container);     // removes the loading wheel and enables the home icon
+    removeContainerLoadingWheel(qr_container); // removes the loading wheel and enables the home icon
     clean_container(qr_container); // delete the existing qr code 
     renderQr(`https://www.pastebin.run/${data}`); //render a new qr code for the code
     url.value = 'your code 😳';
@@ -385,8 +374,8 @@ object_send_button.addEventListener('click' , () => {
 
 
 
-//event 13 - adds an event listener to the "qrify" button on the message tab. the event listener creates a form with the data from the message block, sends it to the pastebin api and renders a new qr code.
-const code_send_button = document.getElementsByClassName('send-code')[0];
+//event 15 - adds an event listener to the "qrify" button on the message tab. the event listener creates a form with the data from the message block, sends it to the pastebin api and renders a new qr code.
+const code_send_button = document.getElementsByClassName('send-object')[0];
 code_send_button.addEventListener('click' , () => {
   changeTab(tab_buttons[0]); // go to the home tab
   const object_data = document.getElementsByClassName('object-data-field');
@@ -410,7 +399,7 @@ code_send_button.addEventListener('click' , () => {
 
 
 
-  //event 14 - adds an event listener to the "qrify" button on the image tab.  the event listener creates a form with the data from the image, sends it to the imgur api and renders a new qr code.
+  //event 16 - adds an event listener to the "qrify" button on the image tab.  the event listener creates a form with the data from the image, sends it to the imgur api and renders a new qr code.
   const image_send_button = document.getElementsByClassName('send-image')[0];
   let user_image = document.getElementById('image-input');
   image_send_button.addEventListener('click', () => {
@@ -438,25 +427,32 @@ code_send_button.addEventListener('click' , () => {
 
 
 
+
+
+
+
+
 //section 3 - actions
+    getContainerLoadingWheel(qr_container , 'large');
+    renderQr(tabs[0].url); // renders the qr code for the active tab we get from the chrome api
+    removeContainerLoadingWheel(qr_container);
+    url.value = tabs[0].url //adds the url of the active tab to the url field in the html
+    save_title = tabs[0].title; // saves the title to the main scope
+  
+    // creating a code block using the code mirror library
+    let myCodeMirror;
+    try{
+      myCodeMirror = CodeMirror(code_container , {
+        value: "",
+        mode:  "javascript", // default programming language
+        theme : "dracula", // code block theme
+        lineNumbers: true
+      });
+      myCodeMirror.refresh();
+      myCodeMirror.setSize(240, 250); // size of the code block
+    }
+    catch{
+      code_container.innerText = 'failed to create code block :(';
+    }
 
-  renderQr(tabs[0].url); // renders the qr code for the active tab we get from the chrome api
-  url.value = tabs[0].url //adds the url of the active tab to the url field in the html
-  save_title = tabs[0].title; // saves the title to the main scope
-
-  // creating a code block useing the code mirror library
-  let myCodeMirror;
-  try{
-    myCodeMirror = CodeMirror(code_container , {
-      value: "",
-      mode:  "javascript", // default programming language
-      theme : "dracula", // code block theme
-      lineNumbers: true
-    });
-    myCodeMirror.refresh();
-    myCodeMirror.setSize(240, 250); // size of the code block
-  }
-  catch{
-    code_container.innerText = 'failed to create code block :(';
-  }
 })();
