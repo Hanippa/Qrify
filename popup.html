@@ -15,6 +15,7 @@
       <img id="logo" src="images/icon-32.png" alt="logo">
       <h1>Qrify</h1>
       <a target="_blank" id="githublink" href="https://github.com/Hanippa/Qrify"><img id="github" src="images/github.svg" alt="github"></a>
+      <button value="history" id="history_button"> <img id="symbol" src="images/symbols/history.svg" alt="symbol"></button>
     </div>
     <div class="tab-container home tab-on">
       <h1 class="color-picker-label">color :</h1>
@@ -91,6 +92,11 @@
    
   </div>
 
+  <div class="tab-container history history-tab">
+    <div class="history-container"></div>
+    <div class="clear-history-button"><img id="symbol" src="images/symbols/delete_sweep.svg" alt="symbol"></div>
+      </div>
+
 
     <div class="footer">
         <button value="home" class="tab tab-button-selected"> <img id="symbol" src="images/symbols/home.svg" alt="symbol"></button>
@@ -104,7 +110,6 @@
 
 
 <script defer class="qr-script" type="module" src="scripts/qrcreator/qr-creator.js"></script>
-<script src="scripts/loadScanner.js" type="module"></script>
 <script defer class="qr-script" src="scripts/codemirror/lib/codemirror.js"></script> 
 <script defer class="qr-script" src="scripts/codemirror/mode/javascript/javascript.js" ></script>
 <script defer class="qr-script" src="scripts/codemirror/mode/python/python.js" ></script>

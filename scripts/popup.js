@@ -6,7 +6,6 @@
 
 const qrScannerModule = await import('./qr-scanner/qr-scanner.min.js');
 const QrScanner = qrScannerModule.default;
-console.log('🤡',QrScanner);
 
     //main scope variables
   let scripts = document.getElementsByClassName('qr-script');
@@ -20,6 +19,7 @@ console.log('🤡',QrScanner);
   let qr_container = document.getElementById('qrcode');
   let qr_canvas = null;
   let tab_buttons = document.getElementsByClassName('tab');
+  let history_tab_button = document.getElementById('history_button');
   let selected_tab_button = document.getElementsByClassName('tab-button-selected')[0];
   let selected_tab = document.getElementsByClassName('tab-on')[0];
   let code_container = document.getElementsByClassName('code-container')[0];
@@ -84,13 +84,13 @@ console.log('🤡',QrScanner);
   }
 
   //function 4 - render qr code
-  const renderQr = (text) => {
+  const renderQr = async (text) => {
     try{
     qr_text = text; // save the text to the main scope
       QrCreator.render({
         text: text,
         radius: 0.5, // 0.0 to 0.5
-        ecLevel: 'H', // L, M, Q, H   
+        ecLevel: 'M', // L, M, Q, H   
         fill: qr_color, // foreground color
         background: null, // color or null for transparent
         size: qr_size // in pixels
@@ -100,6 +100,7 @@ console.log('🤡',QrScanner);
     catch{
       qr_container.innerText = 'failed to render qr code :(';
     };
+    await save_to_storage({time:Date.now() , data:qr_text , color:qr_color , size:qr_size});
   }
 
   //function 5 - change current tab 
@@ -148,7 +149,6 @@ const scan_qr = async () => {
   // Scan the QR code from the qr_image global variable.
   try{
     const scan_result = await QrScanner.scanImage(qr_image, { returnDetailedScanResult: true });
-    console.log(scan_result);
     if(scan_result){
       return scan_result.data;
     }
@@ -158,6 +158,83 @@ const scan_qr = async () => {
   }
 }
 
+//fucntion 11 - save to the chrome storage api (synced).
+const save_to_storage = async (historyEntry) => {
+  chrome.storage.sync.get({ history: [] }).then((result) => {
+    let history = result.history;
+    history.push(historyEntry);
+
+    if (history.length > 40) {
+      const numberOfEntriesToRemove = history.length - 40;
+      history = history.slice(numberOfEntriesToRemove);
+    }
+    chrome.storage.sync.set({ history }).then(() => {
+      if (chrome.runtime.lastError) {
+        console.error(chrome.runtime.lastError);
+      } else {
+        fetchHistory();
+        console.log('History entry saved successfully');
+      }
+    })
+
+  
+  });
+}
+
+//function 12 - fetches the qr code history from the chrome storage api.
+const fetchHistory = () => {
+  const history_container = document.getElementsByClassName('history-container')[0];
+  history_container.innerHTML = '';
+    chrome.storage.sync.get({ history: [] }).then((result) => {
+      const history = result.history;
+      for (let i = history.length - 1; i >= 0; i--) {
+        let history_obj = history[i];
+        const history_element = document.createElement('div');
+        const history_element_data_container = document.createElement('div');
+        const history_element_info_container = document.createElement('div');
+        const history_element_info_color = document.createElement('div');
+        const history_element_data = document.createElement('input');
+        const history_element_time = document.createElement('p');
+        const history_element_size = document.createElement('p');
+        const history_element_color = document.createElement('p');
+
+        history_element.classList.add('history-element');
+        history_element_data.classList.add('history-element-data');
+        history_element_data_container.classList.add('history-element-data-container');
+        history_element_info_container.classList.add('history-element-info-container');
+        history_element_info_color.classList.add('history-element-info-color');
+        history_element_time.classList.add('history-element-time');
+        history_element_size.classList.add('history-element-size');
+        history_element_color.classList.add('history-element-color');
+
+        
+        history_element_info_color.style.backgroundColor = history_obj.color;
+        history_element_data.value = history_obj.data;
+        history_element_data.readOnly = true;
+        history_element_time.innerText = new Date(history_obj.time).toLocaleString();
+        history_element_size.innerText = `size : ${history_obj.size}`;
+        history_element_color.innerText = `color : ${history_obj.color}`;
+
+        const history_element_subcontainer = document.createElement('div');
+        history_element_subcontainer.classList.add('history-element-subcontainer');
+
+        history_element_data_container.append(history_element_data);
+        history_element_subcontainer.append(history_element_data_container);
+
+        history_element_info_container.append(history_element_size);
+        history_element_info_container.append(history_element_color);
+        history_element_info_container.append(history_element_info_color);
+        history_element_subcontainer.append(history_element_info_container);
+
+        history_element.append(history_element_time);
+        history_element.append(history_element_subcontainer);
+
+
+
+        history_container.append(history_element);
+      }
+      });
+}
 
 
 // section 2 - events
@@ -172,7 +249,7 @@ for (let tab_button of tab_buttons){
 
 //event 2 -  adds an event listener to the color input, any time the input changes the program will delete the current qr code, and render a new one.
 const color_picker = document.getElementsByClassName('color-picker')[0]; // color input element
-color_picker.addEventListener('change' , () => {
+color_picker.addEventListener('change' ,() => {
   qr_color = color_picker.value; // save the qr color to the main scope
   clean_container(qr_container);
   renderQr(qr_text);
@@ -183,9 +260,9 @@ color_picker.addEventListener('change' , () => {
 
 //event 3 - adds an event listener to the url input field, any time the input changes the program will delete the current qr code, and render a new one.
 const url = document.getElementsByClassName('url-input')[0]; // url input element
-url.addEventListener('input' , () => {
+url.addEventListener('input' , async () => {
     clean_container(qr_container);
-    renderQr(url.value)
+    renderQr(url.value);
     if(logo_image){
       draw_logo(logo_image , qr_canvas);
     };
@@ -417,15 +494,31 @@ code_send_button.addEventListener('click' , () => {
       removeContainerLoadingWheel(qr_container);//removes the loading wheel and enables the home icon
       clean_container(qr_container); // delete the existing qr code 
       //render a new qr code for the image
-       renderQr(data.data.link)
+       renderQr(data.data.link);
         url.value = 'your image 😳';
         save_title = user_image.files[0].name.split(".")[0];
     }).catch((e) => {
        container_error(qr_container , `failed to upload your image :( \n ${e}`);
     })
-  })
+  });
 
 
+//event 17 - adds an event listener to the history tab button. the event listener adds a class name to the selected tab with different styles to indicate which tab is selected.
+  history_tab_button.addEventListener('click' , () => {
+    changeTab(history_tab_button);
+  });
+
+  //event 18 - adds an event listener to the clear history button which sets the history array in the chrome storage to an empty array ([]);
+  const clear_history_button = document.getElementsByClassName('clear-history-button')[0];
+clear_history_button.addEventListener('click' , () => {
+  chrome.storage.sync.set({ history : [] }).then(() => {
+    fetchHistory();
+    if (chrome.runtime.lastError) {
+      console.error(chrome.runtime.lastError);
+    } else {
+      console.log('History cleared successfully');
+    } });
+});
 
 
 
@@ -454,5 +547,4 @@ code_send_button.addEventListener('click' , () => {
     catch{
       code_container.innerText = 'failed to create code block :(';
     }
-
 })();
