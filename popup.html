@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+  <title>Qrify</title>
+</head>
+<body >
+  <div class="main-container light-mode">
+    <div class="title">
+      <img id="logo" src="images/icon-32.png" alt="logo">
+            <div class="dark-mode-toggle-container">
+        <img src="images/symbols/dark_mode.svg" alt="symbol" id="symbol">
+      </div>
+      <h1 class="main-title">Qrify</h1>
+      <a target="_blank" id="githublink" href="https://github.com/Hanippa/Qrify"><img id="github" src="images/github.svg" alt="github"></a>
+      <button value="history" id="history_button"> <img id="symbol" src="images/symbols/history.svg" alt="symbol"></button>
+    </div>
+    <div class="tab-container home tab-on">
+
+
+      <div class="qrcode-container">
+   <div id="qrcode" class="qrcode">
+
+    </div>
+
+        <div class="qr-options-container">
+      <div class="size-container">
+      <h1 class="size-picker-label">size: </h1>
+      <input class="size-picker" id="size-picker" type="number" value="500">
+      </div>
+      <div class="color-container">
+      <h1 class="color-picker-label">color: </h1>
+      <input class="color-picker" id="color-picker" type="color" value='#121212'>
+      </div>
+      <div class="add-logo-container">
+    <input enctype="multipart/form-data"  accept="image/*" type="file" name="image" id="add-logo-input" class="hidden file-input">
+    <label for="add-logo-input" class="add-logo">logo: <img id="symbol-add-image" src="images/symbols/add_photo.svg" alt="symbol"></label>
+    </div>
+
+    </div>
+      </div>
+    <div class="url">
+      <input class="url-input" type="text">
+    </div>
+
+
+    <div class="qr-actions">
+      <button class="qr-action export">export  <img id="symbol-export" src="images/symbols/download.svg" alt="symbol"></button>
+      <button class="qr-action copy">copy<img id="symbol-copy" src="images/symbols/content_copy.svg" alt="symbol"></button>
+    </div>
+
+    
+  </div>
+
+  
+  <div class="tab-container image file-tab" data-index="1">
+    <div class="qr-input-container">
+    <input enctype="multipart/form-data" accept="image/*" type="file" name="image" id="image-input-1" class="hidden file-input">
+    <label for="image-input-1" class="custom-file-input drag-and-drop"  data-index="1">choose image <img id="symbol" src="images/symbols/upload.svg" alt="symbol"></label>
+    </div>
+    <div class="image-container drag-and-drop " data-index="1">
+      <div class="indicators-container">
+ <div class="indication-container">
+ <img class="indication-icon" id="symbol" src="images/symbols/paste.svg" alt="symbol" draggable="false">
+ <h2>paste</h2>
+      </div>
+     <h1>
+      +
+     </h1>
+      <div class="indication-container">
+<img class="indication-icon" id="symbol" src="images/symbols/drag.svg" alt="symbol" draggable="false">
+ <h2>drop</h2>
+      </div>
+      </div>
+     
+       
+    </div>
+    <button class="send-image">Qrify</button>
+   
+  </div>
+
+
+
+  <div class="tab-container scanner file-tab" data-index="2">
+<div class="qr-input-container">
+    <input enctype="multipart/form-data"  accept="image/*" type="file" name="qr-image" id="image-input-2" class="hidden file-input">
+    <label for="image-input-2"  data-index="2" class="custom-file-input drag-and-drop">choose qr code <img id="symbol" src="images/symbols/upload.svg" alt="symbol"></label>
+    </div>
+
+      <div class="qr-result-container"  >
+
+        <div class="qr-result"></div>
+
+  </div>
+      <div class="qr-image-container drag-and-drop" data-index="2">
+      <div class="indicators-container">
+ <div class="indication-container">
+ <img class="indication-icon" id="symbol" src="images/symbols/paste.svg" alt="symbol" draggable="false">
+ <h2>paste</h2>
+      </div>
+     <h1>
+      +
+     </h1>
+      <div class="indication-container">
+<img class="indication-icon" id="symbol" src="images/symbols/drag.svg" alt="symbol" draggable="false">
+ <h2>drop</h2>
+      </div>
+      </div>
+    </div>
+    <button class="send-qr-image">scan</button>
+   
+  </div>
+
+  <div class="tab-container history history-tab">
+    <div class="history-container"></div>
+    <div class="clear-history-button"><img id="symbol" src="images/symbols/delete_sweep.svg" alt="symbol"></div>
+      </div>
+
+
+    <div class="footer">
+        <button value="home" class="tab tab-button-selected"> <img id="symbol" src="images/symbols/home.svg" alt="symbol"></button>
+          <button value="image" class="tab"> <img id="symbol" src="images/symbols/image.svg" alt="symbol"></button>
+            <button value="scanner" class="tab"> <img id="symbol" src="images/symbols/qr_code_scanner.svg" alt="symbol"></button>
+    </div>
+  </div>
+
+
+
+<script defer class="qr-script" type="module" src="scripts/qrcreator/qr-creator.js"></script>
+<script defer class="qr-script" src="scripts/popup.js"></script>
+</body>
+</html>
