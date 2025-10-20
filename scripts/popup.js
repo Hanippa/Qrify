@@ -1,4 +1,4 @@
-// this code is devided to 3 parts, function -> events -> actions
+// the code is devided into 3 parts, function -> events -> actions
 
 // main function (self invoking)
 (async () => {
@@ -10,7 +10,6 @@ const QrScanner = qrScannerModule.default;
     //main scope variables
   let qr_image = null;
   let qr_color = '#000000ff';
-  // let qr_color = '#ffffffff';
   let save_title = '';
   let qr_text = '';
   let qr_size = 500;
@@ -25,6 +24,7 @@ const QrScanner = qrScannerModule.default;
   let selected_tab_button = document.getElementsByClassName('tab-button-selected')[0];
   let selected_tab = document.getElementsByClassName('tab-on')[0];
   const tabs = await chrome.tabs.query({url: ["<all_urls>"],active: true,currentWindow: true}); // gets all active tabs from the chrome api, with any url
+
   //sction 1 - functions
 
   //function 1 - get loading animation element.
@@ -256,10 +256,26 @@ function setTheme(mode) {
   });
 }
 
-function applyTheme(mode) {
- main_container.classList.remove('light-mode', 'dark-mode');
- main_container.classList.add(mode);
-}
+const applyTheme = (mode) => {
+  main_container.classList.remove('light-mode', 'dark-mode');
+  main_container.classList.add(mode);
+};
+
+// function 15 - change the theme of the extesion to user choise / system default.
+const setExtentionTheme = () => {
+    const system_theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-mode' : 'light-mode';
+    try{
+     chrome.storage.sync.get(['mode'], (result) => {
+    const mode = result.mode || system_theme; // default
+    setTheme(mode);
+    document.getElementsByTagName("body")[0].style="";
+  });
+    }
+    catch{
+      document.getElementsByTagName("body")[0].style="";
+    }
+
+};
 
 // section 2 - events
 
@@ -344,7 +360,7 @@ copybtn.addEventListener('click' , () => {
 
 
 
-//event 9 -  adds an event listener to the qr code file input, any time the file input changes, the image will show in the container
+//event 8 -  adds an event listener to the qr code file input, any time the file input changes, the image will show in the container
 const qr_image_input = document.getElementById('image-input-2');
 const qr_image_container = document.getElementsByClassName('qr-image-container')[0];
 qr_image_input.addEventListener('change' , (event) => {
@@ -359,7 +375,7 @@ qr_image_input.addEventListener('change' , (event) => {
 });
 
 
-//event 10 -  adds an event listener to the image file input, any time the file input changes, the image will show in the container
+//event 9 -  adds an event listener to the image file input, any time the file input changes, the image will show in the container
 const image_input = document.getElementById('image-input-1');
 const image_container = document.getElementsByClassName('image-container')[0];
 image_input.addEventListener('change' , (event) => {
@@ -372,7 +388,7 @@ image_input.addEventListener('change' , (event) => {
   };
 }); 
 
-//event 11 - adds an event listener to the "scan" button on the scanning tab.  the event scans the qr code from image with the jsqr library
+//event 10 - adds an event listener to the "scan" button on the scanning tab.  the event scans the qr code from image with the jsqr library
 const qr_image_send_button = document.getElementsByClassName('send-qr-image')[0]
 qr_image_send_button.addEventListener('click', async () => {
   const imageElement = document.getElementsByClassName('user-qr-image')[0];
@@ -388,7 +404,7 @@ qr_image_send_button.addEventListener('click', async () => {
   document.getElementsByClassName('qr-result')[0].innerHTML = replacedContent
 });
 
-//event 12 - add a paste event to all the file tabs, when a file is pasted in them the file gets added to the file input present in the tab, and triggering its change event
+//event 11 - add a paste event to all the file tabs, when a file is pasted in them the file gets added to the file input present in the tab, and triggering its change event
 const file_tabs = document.getElementsByClassName('file-tab');
 for (let tab of file_tabs){
   tab.addEventListener('paste' , (e) => {
@@ -412,7 +428,7 @@ for (let tab of file_tabs){
   });
 }
 
-//event 13 - add event listeners to all file inputs to enable file drag and drop functionality
+//event 12 - add event listeners to all file inputs to enable file drag and drop functionality
 const custom_file_inputs = document.getElementsByClassName('drag-and-drop');
 for (const element of custom_file_inputs) {
   const input_index = element.dataset.index;
@@ -452,7 +468,7 @@ for (const element of custom_file_inputs) {
 }
 // qrify events 
 
-  //event 16 - adds an event listener to the "qrify" button on the image tab.  the event listener creates a form with the data from the image, sends it to the imgur api and renders a new qr code.
+  //event 13 - adds an event listener to the "qrify" button on the image tab.  the event listener creates a form with the data from the image, sends it to the imgur api and renders a new qr code.
   const image_send_button = document.getElementsByClassName('send-image')[0];
   let user_image = document.getElementById('image-input-1');
   image_send_button.addEventListener('click', () => {
@@ -481,12 +497,12 @@ for (const element of custom_file_inputs) {
   });
 
 
-//event 17 - adds an event listener to the history tab button. the event listener adds a class name to the selected tab with different styles to indicate which tab is selected.
+//event 14 - adds an event listener to the history tab button. the event listener adds a class name to the selected tab with different styles to indicate which tab is selected.
   history_tab_button.addEventListener('click' , () => {
     changeTab(history_tab_button);
   });
 
-  //event 18 - adds an event listener to the clear history button which sets the history array in the chrome storage to an empty array ([]);
+  //event 15 - adds an event listener to the clear history button which sets the history array in the chrome storage to an empty array ([]);
   const clear_history_button = document.getElementsByClassName('clear-history-button')[0];
 clear_history_button.addEventListener('click' , () => {
   chrome.storage.sync.set({ history : [] }).then(() => {
@@ -498,9 +514,8 @@ clear_history_button.addEventListener('click' , () => {
     } });
 });
 
-//event 19 - adds an event listener to the dark mode toggle.
+//event 16 - adds an event listener to the dark mode toggle.
   dark_mode_toggle.addEventListener('click' , () => {
-    console.log("mode");
     chrome.storage.sync.get(['mode'], (result) => {
       console.log(result.mode);
     const mode = result.mode || 'light-mode'; // default
@@ -517,18 +532,7 @@ clear_history_button.addEventListener('click' , () => {
 
 //section 3 - actions
 
-    const system_theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-mode' : 'light-mode';
-    try{
-     chrome.storage.sync.get(['mode'], (result) => {
-    const mode = result.mode || system_theme; // default
-    setTheme(mode);
-    document.getElementsByTagName("body")[0].style="";
-  });
-    }
-    catch{
-      document.getElementsByTagName("body")[0].style="";
-    }
-
+    setExtentionTheme();
     getContainerLoadingWheel(qr_container , 'large');
     renderQr(tabs[0].url); // renders the qr code for the active tab we get from the chrome api
     removeContainerLoadingWheel(qr_container);
