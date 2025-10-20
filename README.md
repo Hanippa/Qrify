@@ -5,12 +5,12 @@
 <h1 align="center">QRify</h1>
 
 <p align="center">
-  Your All-in-One QR Code Generator for Chrome
+  Your All-in-One QR Code Generator and scanner for Chrome
 </p>
 
 
 <p align="center">
-  <em>Unlock the potential of QR codes with QRify, the ultimate QR code generator designed exclusively for your browser. Seamlessly creating QR codes for URLs, images, code snippets, and messages, QRify revolutionizes the way you connect, share, and communicate online.</em>
+  <em>Unlock the potential of QR codes with QRify, the ultimate QR code generator designed exclusively for your browser. Seamlessly creating QR codes for URLs and images.  QRify revolutionizes the way you connect, share, and communicate online.</em>
 </p>
 
 ---
@@ -18,10 +18,9 @@
 
 ## 🚀 Features
 
-- Generate QR codes for URLs, images, code snippets, and messages.
+- Generate QR codes for URLs and images.
 - Simplify code sharing and collaboration by encoding code snippets into QR codes.
 - Effortlessly share images by converting them into scannable QR codes.
-- Craft personalized messages, contact details, or instructions and convert them into QR codes.
 - Easy-to-use interface with customizable options.
 - Lightning-fast performance, even with large files or complex URLs.
 - Cross-platform compatibility with Chrome browser.
