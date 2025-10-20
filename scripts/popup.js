@@ -516,17 +516,23 @@ clear_history_button.addEventListener('click' , () => {
 
 
 //section 3 - actions
+
+    const system_theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-mode' : 'light-mode';
+    try{
+     chrome.storage.sync.get(['mode'], (result) => {
+    const mode = result.mode || system_theme; // default
+    setTheme(mode);
+    document.getElementsByTagName("body")[0].style="";
+  });
+    }
+    catch{
+      document.getElementsByTagName("body")[0].style="";
+    }
+
     getContainerLoadingWheel(qr_container , 'large');
     renderQr(tabs[0].url); // renders the qr code for the active tab we get from the chrome api
     removeContainerLoadingWheel(qr_container);
     url.value = tabs[0].url //adds the url of the active tab to the url field in the html
     save_title = tabs[0].title; // saves the title to the main scope
-
-
-    const system_theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-mode' : 'light-mode';
-     chrome.storage.sync.get(['mode'], (result) => {
-    const mode = result.mode || system_theme; // default
-    setTheme(mode);
-  });
   
 })();

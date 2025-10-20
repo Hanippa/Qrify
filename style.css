@@ -3,6 +3,7 @@
     font-family: 'Readex Pro';
     src: url('fonts/ReadexPro-Light.ttf') format('truetype');
 }
+
 ::-webkit-scrollbar {
     height: 12px;
     width: 8px;

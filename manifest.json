@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Qrify",
+  "name": "Qrify - qr code generator and scanner",
   "description": "Qr code generator and scanner, with customization options, and an image qr code generator",
   "version": "10.0",
   "author": "https://github.com/hanippa", 
